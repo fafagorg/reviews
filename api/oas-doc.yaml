@@ -1,0 +1,330 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Review list
+  description: >-
+    This is an OpenAPI Specification created by oas-wizard
+    (https://github.com/pafmon/oas-wizard)  
+  contact:
+    name: PabloFM
+    email: pablofm@us.es
+    url: 'http://www.isa.us.es'
+  license:
+    name: MIT
+    url: 'http://opensource.org/licenses/MIT'
+paths:
+  /api/v1/questions:
+    get:
+      description: Returns all questions
+      operationId: getQuestions
+      responses:
+        '200':
+          description: Question List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/question'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    post:
+      description: Creates a new question
+      operationId: addQuestion
+      responses:
+        '201':
+          description: question created
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: question
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/question'
+        description: Question to be created
+        required: true
+  '/api/v1/questions/{id}':
+    get:
+      description: Returns a question by id
+      operationId: findQuestionByid
+      parameters:
+        - name: id
+          in: path
+          description: id of question to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Question returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/question'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    delete:
+      description: deletes a single question based on the id
+      operationId: deleteQuestion
+      parameters:
+        - name: id
+          in: path
+          description: ID of question to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: question deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    put:
+      description: Update a question based on its id
+      operationId: updateQuestion
+      parameters:
+        - name: id
+          in: path
+          description: ID of question to put
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: question updated
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: question
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/question'
+        description: Question to be updated
+        required: true
+  /api/v1/reviews:
+    get:
+      description: Returns all reviews
+      operationId: getReviews
+      responses:
+        '200':
+          description: Review List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/review'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    post:
+      description: Creates a new review
+      operationId: addReview
+      responses:
+        '201':
+          description: review created
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: review
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/review'
+        description: Review to be created
+        required: true
+  '/api/v1/reviews/{id}':
+    get:
+      description: Returns a review by id
+      operationId: findReviewByid
+      parameters:
+        - name: id
+          in: path
+          description: id of review to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Review returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/review'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    delete:
+      description: deletes a single review based on the id
+      operationId: deleteReview
+      parameters:
+        - name: id
+          in: path
+          description: ID of review to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: review deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    put:
+      description: Update a review based on its id
+      operationId: updateReview
+      parameters:
+        - name: id
+          in: path
+          description: ID of review to put
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: review updated
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: review
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/review'
+        description: Review to be updated
+        required: true
+components:
+  schemas:
+    errorModel:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    review:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        reviewedClientId:
+          type: string
+          minLength: 1
+        reviewedProductId:
+          type: string
+          minLength: 1
+        reviewerClientId:
+          type: string
+          minLength: 1
+        title:
+          type: string
+          minLength: 1
+        score:
+          type: number
+        description:
+          type: string
+          minLength: 1
+        dateCreated:
+          type: string
+          minLength: 1
+        images: {}
+        comments:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            required:
+              - user
+            properties:
+              user:
+                type: string
+                minLength: 1
+      required:
+        - id
+        - reviewedClientId
+        - reviewedProductId
+        - reviewerClientId
+        - title
+        - score
+        - description
+        - dateCreated
+        - comments
+    question:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        product:
+          type: string
+          minLength: 1
+        client:
+          type: string
+          minLength: 1
+        questionText:
+          type: string
+          minLength: 1
+        dateCreated:
+          type: string
+          minLength: 1
+        replies:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            required:
+              - client
+            properties:
+              client:
+                type: string
+                minLength: 1
+      required:
+        - id
+        - product
+        - client
+        - questionText
+        - dateCreated
+        - replies
