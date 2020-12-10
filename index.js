@@ -7,6 +7,10 @@ var fs = require('fs'),
 var express = require("express");
 var app = express();
 var bodyParser = require('body-parser');
+var database = require('../db');
+
+database.connect();
+
 app.use(bodyParser.json({
   strict: false
 }));
