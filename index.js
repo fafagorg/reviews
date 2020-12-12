@@ -1,5 +1,9 @@
 'use strict';
 
+if (process.env.ENVIRONMENT !== 'production') {
+  require('dotenv').config();
+}
+
 var fs = require('fs'),
     http = require('http'),
     path = require('path');
@@ -9,7 +13,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var database = require('./db');
 
-//database.connect();
+database.connect();
 
 app.use(bodyParser.json({
   strict: false
