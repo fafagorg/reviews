@@ -1,6 +1,6 @@
 'use strict'
 
-questionController = require('./questionService');
+var questionController = require('./questionService');
 
 module.exports.getQuestions = function getQuestions(req, res, next) {
  questionController.getQuestions(req.swagger.params, res, next);

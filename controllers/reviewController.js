@@ -1,6 +1,6 @@
 'use strict'
 
-var reviewService = require('./reviewControllerService');
+var reviewService = require('./reviewService');
 
 module.exports.getReviews = function getReviews(req, res, next) {
  reviewService.getReviews(req.swagger.params, res, next);
