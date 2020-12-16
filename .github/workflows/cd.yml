@@ -21,7 +21,7 @@ jobs:
     - name: Build Docker image
       uses: docker/build-push-action@v1.1.0
       with:
-        username: fafagosoftware
+        username: fafago
         password: ${{ secrets.DOCKER_REGISTRY_PASS }}
         repository: fafago/governify-web
         tags: latest
