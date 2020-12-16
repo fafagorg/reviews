@@ -37,7 +37,7 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}  
   dockerDev:
-    if: ${{ github.ref == 'refs/heads/dev' && github.event_name == 'push'}}
+    if: ${{ github.ref == 'refs/heads/cdci' && github.event_name == 'push'}}
     name: Build and push Docker images 
     runs-on: ubuntu-latest
     strategy:
