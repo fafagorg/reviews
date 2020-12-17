@@ -1,4 +1,8 @@
-# 1.1.0 (2020-12-17)
+## [1.1.1](https://github.com/fafagorg/reviews/compare/v1.1.0...v1.1.1) (2020-12-17)
+
+
+
+# [1.1.0](https://github.com/fafagorg/reviews/compare/284bb988665575a8194b7d2a29c7f58d6a074a29...v1.1.0) (2020-12-17)
 
 
 ### Bug Fixes
