@@ -14,6 +14,7 @@ info:
     url: 'http://opensource.org/licenses/MIT'
 paths:
   /api/v1/questions:
+    x-swagger-router-controller: questionController
     get:
       description: Returns all questions
       operationId: getQuestions
@@ -53,6 +54,7 @@ paths:
         description: Question to be created
         required: true
   '/api/v1/questions/{id}':
+    x-swagger-router-controller: questionController
     get:
       description: Returns a question by id
       operationId: findQuestionByid
@@ -123,6 +125,7 @@ paths:
         description: Question to be updated
         required: true
   /api/v1/reviews:
+    x-swagger-router-controller: reviewController
     get:
       description: Returns all reviews
       operationId: getReviews
@@ -162,6 +165,7 @@ paths:
         description: Review to be created
         required: true
   '/api/v1/reviews/{id}':
+    x-swagger-router-controller: reviewController
     get:
       description: Returns a review by id
       operationId: findReviewByid
