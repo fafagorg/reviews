@@ -1,3 +1,12 @@
+## [1.1.3](https://github.com/fafagorg/reviews/compare/v1.1.2...v1.1.3) (2020-12-17)
+
+
+### Bug Fixes
+
+* Hotfix for main auto releases ([34d23e5](https://github.com/fafagorg/reviews/commit/34d23e5551e927859252ce3051df8671250a94f3))
+
+
+
 ## [1.1.2](https://github.com/fafagorg/reviews/compare/v1.1.1...v1.1.2) (2020-12-17)
 
 
