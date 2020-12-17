@@ -32,12 +32,6 @@ jobs:
         release_name: ${{ steps.changelog.outputs.tag }}
         body: ${{ steps.changelog.outputs.clean_changelog }}
 
-    - name: Sync Github info from release
-      uses: jaid/action-sync-node-meta@v1.4.0
-      with:
-        direction: overwrite-github
-        githubToken: ${{ secrets.priv_github_token }}
-
     - name: Sync develop with master
       uses: repo-sync/pull-request@v2
       with:
