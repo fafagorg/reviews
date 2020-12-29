@@ -1,21 +1,42 @@
 var mongoose = require('mongoose')
 
 var ReviewSchema = new mongoose.Schema({
-    title: String,
-    score: Number,
-    description: String,
-    dateCreated: String,
+    id: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    score: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5
+    },
+    description: {
+        type: String,
+        required: true,
+        maxlength: 500
+    },
+    dateCreated: {
+        type: String,
+        required: true
+    },
+    reviewerClientId: {
+        type: String,
+        required: true
+    },
+    reviewedProductId: String,
+    reviewedClientId: String,
     comments: [
         {
             user: String,
-            body: String
-           // date: Date
+            body: String,
+            date: String
         }
     ],
-    reviewerClientId: String,
-    reviewedProductId: String,
-    reviewedClientId: String,
-    id: String
 })
 
 module.exports = mongoose.model('Review', ReviewSchema);
