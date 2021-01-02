@@ -320,9 +320,9 @@ components:
           minItems: 0
           items:
             required:
-              - client
+              - user
             properties:
-              client:
+              user:
                 type: string
                 minLength: 1
       required:
