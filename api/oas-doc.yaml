@@ -317,7 +317,7 @@ components:
         replies:
           type: array
           uniqueItems: true
-          minItems: 1
+          minItems: 0
           items:
             required:
               - client
@@ -331,4 +331,3 @@ components:
         - client
         - questionText
         - dateCreated
-        - replies
