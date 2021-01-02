@@ -19,9 +19,7 @@ const responseUnexpectedError = {
 };
 
 module.exports.getQuestions = function getQuestions(req, res, next) {
-  res.send({
-    message: 'This is the mockup controller for getQuestions'
-  });
+  questionModel.find({}).lean().then(question=> res.status(200).send(question));
 };
 
 module.exports.addQuestion = function addQuestion(req, res, next) {
@@ -47,10 +45,7 @@ module.exports.addQuestion = function addQuestion(req, res, next) {
 };
 
 module.exports.findQuestionByid = function findQuestionByid(req, res, next) {
-
- questionModel.findOne({id: req.id.value}, function(err, question){
-  res.status(200).send(JSON.stringify(question))
-  })
+ questionModel.findOne({id: req.id.value}).lean().then(question=> res.status(200).send(question));
 };
 
 module.exports.deleteQuestion = function deleteQuestion(req, res, next) {
