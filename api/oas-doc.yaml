@@ -315,12 +315,12 @@ components:
         replies:
           type: array
           uniqueItems: true
-          minItems: 1
+          minItems: 0
           items:
             required:
-              - client
+              - user
             properties:
-              client:
+              user:
                 type: string
                 minLength: 1
       required:
