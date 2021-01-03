@@ -235,6 +235,152 @@ paths:
               $ref: '#/components/schemas/review'
         description: Review to be updated
         required: true
+  '/api/v1/reviews/client/{clientId}':
+    x-swagger-router-controller: reviewController
+    get:
+      description: Returns all the reviews of the given client id
+      operationId: findReviewsByClientId
+      parameters:
+        - name: clientId
+          in: path
+          description: id of the reviewed client
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reviews returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reviewResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    delete:
+      description: Deletes all the reviews of the given client id
+      operationId: deleteReviewsByClientId
+      parameters:
+        - name: clientId
+          in: path
+          description: ID of the reviewed client
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Reviews deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+  '/api/v1/reviews/product/{productId}':
+    x-swagger-router-controller: reviewController
+    get:
+      description: Returns all the reviews of the given product id
+      operationId: findReviewsByProductId
+      parameters:
+        - name: productId
+          in: path
+          description: id of the reviewed product
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reviews returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reviewResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    delete:
+      description: Deletes all the reviews of the given product id
+      operationId: deleteReviewsByProductId
+      parameters:
+        - name: productId
+          in: path
+          description: ID of the reviewed product
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Reviews deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+  '/api/v1/review/{id}/comments':
+    x-swagger-router-controller: reviewController
+    get:
+      description: Returns all the comments of the review with the given id
+      operationId: findReviewCommentsById
+      parameters:
+        - name: id
+          in: path
+          description: id of review to fetch comments
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comments returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/commentResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    post:
+      description: Creates a new comment for the given review
+      operationId: addCommentToReview
+      parameters:
+        - name: id
+          in: path
+          description: id of review to add the comment
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Comment added
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: comment
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+        description: Comment to be added
+        required: true
 components:
   schemas:
     errorModel:
@@ -275,9 +421,9 @@ components:
           minItems: 0
           items:
             required:
-              - user
+              - clientId
             properties:
-              user:
+              clientId:
                 type: string
                 minLength: 1
               body:
@@ -293,7 +439,6 @@ components:
         - title
         - score
         - description
-        - comments
     question:
       type: object
       properties:
@@ -318,9 +463,9 @@ components:
           minItems: 0
           items:
             required:
-              - user
+              - clientId
             properties:
-              user:
+              clientId:
                 type: string
                 minLength: 1
       required:
@@ -363,12 +508,12 @@ components:
           minItems: 0
           items:
             required:
-              - user
+              - clientId
             properties:
               id:
                 type: string
                 minLength: 1
-              user:
+              clientId:
                 type: string
                 minLength: 1
               body:
@@ -387,3 +532,35 @@ components:
         - score
         - description
         - comments
+    comment:
+      type: object
+      properties:
+        clientId:
+          type: string
+          minLength: 1
+        body:
+          type: string
+          minLength: 1
+      required:
+        - clientId
+        - body
+    commentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+        clientId:
+          type: string
+          minLength: 1
+        body:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          minLength: 1
+      required:
+        - id
+        - clientId
+        - body
+        - date
