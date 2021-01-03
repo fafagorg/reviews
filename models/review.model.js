@@ -32,7 +32,8 @@ var ReviewSchema = new mongoose.Schema({
     reviewedClientId: String,
     comments: [
         {
-            user: String,
+            id: String,
+            clientId: String,
             body: String,
             date: String
         }

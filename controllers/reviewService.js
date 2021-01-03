@@ -19,7 +19,12 @@ module.exports.getReviews = function getReviews(req, res, next) {
 
 // POST /api/v1/reviews
 module.exports.addReview = function addReview(req, res, next) {
-  if (!req.review.value) {
+  var keys = []
+  for (var key in req.comment.value) {
+    keys.push(key);
+  }
+  
+  if (keys.length === 0) {
     return res.status(400).send(getResponse(400, "Request body is missing"));
   }
 
@@ -99,6 +104,123 @@ module.exports.updateReview = function updateReview(req, res, next) {
       res.status(500).send(err);
     });
 };
+
+// GET /api/v1/reviews/client/{clientId}
+module.exports.findReviewsByClientId = function findReviewsByClientId(req, res, next) {
+  ReviewModel.find({
+    reviewedClientId: req.clientId.value
+  }).lean()
+    .then(doc => {
+      removeUnnecessaryAttributes(doc);
+
+      res.send(doc);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// DELETE /api/v1/reviews/client/{clientId}
+module.exports.deleteReviewsByClientId = function deleteReviewsByClientId(req, res, next) {
+  ReviewModel.deleteMany({
+    reviewedClientId: req.clientId.value
+  })
+    .then(doc => {
+      if (doc.deletedCount > 0) {
+        return res.status(204).send("Reviews deleted.");
+      }
+
+      return res.status(404).send(getResponse(404, "Client id not found."));
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// GET /api/v1/reviews/product/{productId}
+module.exports.findReviewsByProductId = function findReviewsByProductId(req, res, next) {
+  ReviewModel.find({
+    reviewedProductId: req.productId.value
+  }).lean()
+    .then(doc => {
+      removeUnnecessaryAttributes(doc);
+
+      res.send(doc);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// DELETE /api/v1/reviews/product/{productId}
+module.exports.deleteReviewsByProductId = function deleteReviewsByProductId(req, res, next) {
+  ReviewModel.deleteMany({
+    reviewedProductId: req.productId.value
+  })
+    .then(doc => {
+      if (doc.deletedCount > 0) {
+        return res.status(204).send("Reviews deleted.");
+      }
+
+      return res.status(404).send(getResponse(404, "Product id not found."));
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// GET /api/v1/review/{id}/comments
+module.exports.findReviewCommentsById = function findReviewCommentsById(req, res, next) {
+  ReviewModel.findOne({
+    id: req.id.value
+  }).lean()
+    .then(doc => {
+      if (doc === null) {
+        return res.status(404).send(getResponse(404, "Review not found."));
+      }
+      removeUnnecessaryAttributes(doc);
+
+      res.send(doc.comments);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// POST /api/v1/review/{id}/comments
+module.exports.addCommentToReview = function addCommentToReview(req, res, next) {
+  var keys = []
+  for (var key in req.comment.value) {
+    keys.push(key);
+  }
+
+  if (keys.length === 0) {
+    return res.status(400).send(getResponse(400, "Request body is missing"));
+  }
+
+  var comment = {
+    id: uuidv4(),
+    clientId: req.comment.value.clientId,
+    body: req.comment.value.body,
+    date: new Date().toISOString()
+  }
+
+  ReviewModel.updateOne(
+    { id: req.id.value },
+    { $push: { comments: comment } },
+    { safe: true, upsert: false }
+  ).lean()
+    .then(doc => {
+      if (doc.nModified > 0) {
+        return res.status(201).send(getResponse(201, "Comment added successfully"));
+      }
+
+      return res.status(404).send(getResponse(404, "Review not found."));
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
 
 // ----------------- Helper methods -----------------
 
