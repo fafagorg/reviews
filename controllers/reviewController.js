@@ -45,3 +45,15 @@ module.exports.findReviewCommentsById = function findReviewCommentsById(req, res
 module.exports.addCommentToReview = function addCommentToReview(req, res, next) {
   reviewService.addCommentToReview(req.swagger.params, res, next);
 };
+
+module.exports.findReviewSingleComment = function findReviewSingleComment(req, res, next) {
+  reviewService.findReviewSingleComment(req.swagger.params, res, next);
+};
+
+module.exports.deleteCommentFromReview = function deleteCommentFromReview(req, res, next) {
+  reviewService.deleteCommentFromReview(req.swagger.params, res, next);
+};
+
+module.exports.updateCommentFromReview = function updateCommentFromReview(req, res, next) {
+  reviewService.updateCommentFromReview(req.swagger.params, res, next);
+};
