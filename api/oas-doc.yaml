@@ -381,6 +381,101 @@ paths:
               $ref: '#/components/schemas/comment'
         description: Comment to be added
         required: true
+  '/api/v1/review/{reviewId}/comment/{commentId}':
+    x-swagger-router-controller: reviewController
+    get:
+      description: Returns the comment with the given id in the given review
+      operationId: findReviewSingleComment
+      parameters:
+        - name: reviewId
+          in: path
+          description: id of the review
+          required: true
+          schema:
+            type: string
+        - name: commentId
+          in: path
+          description: id of the comment
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Comment returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commentResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    delete:
+      description: Deletes the given comment from the given review
+      operationId: deleteCommentFromReview
+      parameters:
+        - name: reviewId
+          in: path
+          description: Id of the review
+          required: true
+          schema:
+            type: string
+        - name: commentId
+          in: path
+          description: Id of the comment
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Comment deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    put:
+      description: Updates the comment with the given id from the given review
+      operationId: updateCommentFromReview
+      parameters:
+        - name: reviewId
+          in: path
+          description: Id of the review
+          required: true
+          schema:
+            type: string
+        - name: commentId
+          in: path
+          description: Id of the comment
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Comment updated
+        '404':
+          description: Comment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+      requestBody:
+        x-name: comment
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+        description: Comment to be updated
+        required: true
 components:
   schemas:
     errorModel:

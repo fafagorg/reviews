@@ -23,7 +23,7 @@ module.exports.addReview = function addReview(req, res, next) {
   for (var key in req.comment.value) {
     keys.push(key);
   }
-  
+
   if (keys.length === 0) {
     return res.status(400).send(getResponse(400, "Request body is missing"));
   }
@@ -216,6 +216,77 @@ module.exports.addCommentToReview = function addCommentToReview(req, res, next) 
       }
 
       return res.status(404).send(getResponse(404, "Review not found."));
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// GET /api/v1/review/{reviewId}/comment/{commentId}
+module.exports.findReviewSingleComment = function findReviewSingleComment(req, res, next) {
+  ReviewModel.findOne({
+    id: req.reviewId.value
+  }).lean()
+    .then(doc => {
+      if (doc === null) {
+        return res.status(404).send(getResponse(404, "Review not found."));
+      }
+      removeUnnecessaryAttributes(doc);
+
+      var commentToReturn = {};
+
+      commentToReturn = doc.comments.filter(comment => comment.id === req.commentId.value)[0];
+
+      if (JSON.stringify(commentToReturn) === undefined) {
+        return res.status(404).send(getResponse(404, "The comment does not exist in the review."));
+      }
+
+      res.send(commentToReturn);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// DELETE /api/v1/review/{reviewId}/comment/{commentId}
+module.exports.deleteCommentFromReview = function deleteCommentFromReview(req, res, next) {
+  ReviewModel.updateOne(
+    { id: req.reviewId.value },
+    { $pull: { comments: { id: req.commentId.value } } },
+    { safe: true }
+  ).lean()
+    .then(doc => {
+      if (doc.nModified > 0) {
+        return res.status(201).send(getResponse(201, "Comment deleted successfully"));
+      }
+
+      return res.status(404).send(getResponse(404, "Comment not found."));
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    });
+}
+
+// PUT /api/v1/review/{reviewId}/comment/{commentId}
+module.exports.updateCommentFromReview = function updateCommentFromReview(req, res, next) {
+  ReviewModel.updateOne(
+    {
+      id: req.reviewId.value,
+      "comments.id": req.commentId.value
+    },
+    {
+      $set: {
+        "comments.$.body": req.comment.value.body
+      }
+    },
+    { safe: true }
+  ).lean()
+    .then(doc => {
+      if (doc.nModified > 0) {
+        return res.status(201).send(getResponse(201, "Comment updated successfully"));
+      }
+
+      return res.status(404).send(getResponse(404, "Comment not found."));
     })
     .catch(err => {
       res.status(500).send(err);
