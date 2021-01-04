@@ -25,7 +25,7 @@ module.exports.addReview = function addReview(req, res, next) {
   }
 
   if (keys.length === 0) {
-    return res.status(400).send(getResponse(400, "Request body is missing"));
+    return res.status(400).send(getResponse(400, "Request body is missing."));
   }
 
   var review = new ReviewModel(req.review.value);
@@ -36,10 +36,10 @@ module.exports.addReview = function addReview(req, res, next) {
   review.save()
     .then(doc => {
       if (!doc || doc.length === 0) {
-        return res.status(500).send(getResponse(500, "Unexpected error"));
+        return res.status(500).send(getResponse(500, "Unexpected error."));
       }
 
-      res.status(201).send(getResponse(201, "Review created successfully"));
+      res.status(201).send(getResponse(201, "Review created successfully."));
     })
     .catch(err => {
       res.status(500).send(getResponse(500, err));
@@ -84,7 +84,7 @@ module.exports.deleteReview = function deleteReview(req, res, next) {
 // PUT /api/v1/reviews/{id}
 module.exports.updateReview = function updateReview(req, res, next) {
   if (!req.review.value) {
-    return res.status(400).send(getResponse(400, "Request body is missing"));
+    return res.status(400).send(getResponse(400, "Request body is missing."));
   }
 
   ReviewModel.findOneAndUpdate({
@@ -195,7 +195,7 @@ module.exports.addCommentToReview = function addCommentToReview(req, res, next) 
   }
 
   if (keys.length === 0) {
-    return res.status(400).send(getResponse(400, "Request body is missing"));
+    return res.status(400).send(getResponse(400, "Request body is missing."));
   }
 
   var comment = {
@@ -211,8 +211,8 @@ module.exports.addCommentToReview = function addCommentToReview(req, res, next) 
     { safe: true, upsert: false }
   ).lean()
     .then(doc => {
-      if (doc.nModified > 0) {
-        return res.status(201).send(getResponse(201, "Comment added successfully"));
+      if (doc.n > 0) {
+        return res.status(201).send(getResponse(201, "Comment added successfully."));
       }
 
       return res.status(404).send(getResponse(404, "Review not found."));
@@ -256,8 +256,8 @@ module.exports.deleteCommentFromReview = function deleteCommentFromReview(req, r
     { safe: true }
   ).lean()
     .then(doc => {
-      if (doc.nModified > 0) {
-        return res.status(201).send(getResponse(201, "Comment deleted successfully"));
+      if (doc.n > 0) {
+        return res.status(201).send(getResponse(201, "Comment deleted successfully."));
       }
 
       return res.status(404).send(getResponse(404, "Comment not found."));
@@ -269,6 +269,15 @@ module.exports.deleteCommentFromReview = function deleteCommentFromReview(req, r
 
 // PUT /api/v1/review/{reviewId}/comment/{commentId}
 module.exports.updateCommentFromReview = function updateCommentFromReview(req, res, next) {
+  var keys = []
+  for (var key in req.comment.value) {
+    keys.push(key);
+  }
+
+  if (keys.length === 0) {
+    return res.status(400).send(getResponse(400, "Request body is missing."));
+  }
+
   ReviewModel.updateOne(
     {
       id: req.reviewId.value,
@@ -282,8 +291,8 @@ module.exports.updateCommentFromReview = function updateCommentFromReview(req, r
     { safe: true }
   ).lean()
     .then(doc => {
-      if (doc.nModified > 0) {
-        return res.status(201).send(getResponse(201, "Comment updated successfully"));
+      if (doc.n > 0) {
+        return res.status(201).send(getResponse(201, "Comment updated successfully."));
       }
 
       return res.status(404).send(getResponse(404, "Comment not found."));
