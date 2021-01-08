@@ -1,10 +1,10 @@
 let mongoose = require('mongoose')
 
-const SSL = false;
-const AUTH = false;
-const SERVER = 'localhost';
-const PORT = 27017
-const DATABASE = 'fafago_test';
+const SSL =  process.env.DB_SSL;
+const AUTH =  process.env.DB_AUTH;
+const SERVER =  process.env.DB_SERVER;
+const PORT =  process.env.DB_PORT;
+const DATABASE =  process.env.DB_NAME;
 const USER = process.env.DB_USER;
 const PASSWORD = process.env.DB_PASSWORD;
 const OPTIONS = 'retryWrites=true&w=majority';
