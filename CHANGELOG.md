@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/fafagorg/reviews/compare/v1.1.3...v1.2.0) (2021-01-08)
+
+
+### Features
+
+* Added compatibility for non SSL mongo and localhost ([60decc3](https://github.com/fafagorg/reviews/commit/60decc30e748d87195b0915eadb4d30ec292e628))
+* Added question model ([e95e819](https://github.com/fafagorg/reviews/commit/e95e819379d4c78634b539e298092320c5bf4229))
+* Implementing get methods ([1eb51ea](https://github.com/fafagorg/reviews/commit/1eb51eabd5ffb32ecfcbf4c7b843b13d3dbdc02f))
+* Implementing questions endpoints [#14](https://github.com/fafagorg/reviews/issues/14) ([ae5af22](https://github.com/fafagorg/reviews/commit/ae5af22ca74c523d631fb60bdcadb3943973f3c1))
+
+
+
 ## [1.1.3](https://github.com/fafagorg/reviews/compare/v1.1.2...v1.1.3) (2020-12-17)
 
 
