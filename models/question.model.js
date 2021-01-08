@@ -5,9 +5,10 @@ var QuestionSchema = new mongoose.Schema({
     dateCreated: String,
     replies: [
         {
-            user: String,
-            body: String
-           // date: Date
+            id: String,
+            clientId: String,
+            body: String,
+            date: String
         }
     ],
     clientId: String,

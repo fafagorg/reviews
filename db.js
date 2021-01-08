@@ -1,8 +1,8 @@
 let mongoose = require('mongoose')
 
-const SSL = true;
-const AUTH = true;
-const SERVER = 'testcluster.baz6y.mongodb.net';
+const SSL = false;
+const AUTH = false;
+const SERVER = 'localhost';
 const PORT = 27017
 const DATABASE = 'fafago_test';
 const USER = process.env.DB_USER;
