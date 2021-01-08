@@ -1,3 +1,12 @@
+## [1.2.2](https://github.com/fafagorg/reviews/compare/v1.2.1...v1.2.2) (2021-01-08)
+
+
+### Bug Fixes
+
+* DB variables error [#13](https://github.com/fafagorg/reviews/issues/13) ([900687a](https://github.com/fafagorg/reviews/commit/900687a10e0272f3b9db46575112dc7c68d33fe7))
+
+
+
 ## [1.2.1](https://github.com/fafagorg/reviews/compare/v1.2.0...v1.2.1) (2021-01-08)
 
 
