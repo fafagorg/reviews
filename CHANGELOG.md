@@ -1,3 +1,7 @@
+## [1.2.1](https://github.com/fafagorg/reviews/compare/v1.2.0...v1.2.1) (2021-01-08)
+
+
+
 # [1.2.0](https://github.com/fafagorg/reviews/compare/v1.1.3...v1.2.0) (2021-01-08)
 
 
