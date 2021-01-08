@@ -13,9 +13,6 @@ console.log(AUTH )
 let databaseFullURL = 'mongodb' + (SSL ? '+srv://': '://') + (AUTH == 'true' ? `${USER}:${PASSWORD}@${SERVER}` : `${SERVER}`) + (SSL ? `/${DATABASE}?${OPTIONS}` : `:${PORT}/${DATABASE}?${OPTIONS}`);
 
 function connect() {
-    console.log(AUTH )
-    console.log('DB URL' + databaseFullURL)
-  //  mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`);
     mongoose.connect(databaseFullURL, { useNewUrlParser: true, useUnifiedTopology: true });
 }
 
