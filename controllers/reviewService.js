@@ -1,6 +1,7 @@
 'use strict'
 
 const { v4: uuidv4 } = require('uuid');
+const axios = require('axios')
 const AuthResource = require('../resources/authResource')
 var ReviewModel = require("../models/review.model");
 
@@ -26,6 +27,24 @@ module.exports.getReviews = function getReviews(req, res, headers, next) {
 // POST /api/v1/reviews
 module.exports.addReview = function addReview(req, res, headers, next) {
   AuthResource.auth(headers.jwt).then((body) => {
+
+      
+    axios({
+      method: 'post',
+      url: 'https://api.deepai.org/api/sentiment-analysis',
+      headers: {
+        'api-key': '91447500-7bcd-4998-92e3-17bd7f40a52c'
+      },
+      data: {
+        text: 'Thanks'
+      }
+    }).then((response) => {
+      console.log(response);
+    }, (error) => {
+      console.log(error);
+    });
+
+
     var keys = []
     for (var key in req.review.value) {
       keys.push(key);
@@ -39,6 +58,8 @@ module.exports.addReview = function addReview(req, res, headers, next) {
 
     review.id = uuidv4();
     review.dateCreated = new Date().toISOString();
+    review.externalScore = 'neutral';
+   
 
     review.save()
       .then(doc => {
@@ -52,6 +73,7 @@ module.exports.addReview = function addReview(req, res, headers, next) {
         res.status(500).send(getResponse(500, err));
       })
   }).catch((error) => {
+    console.log(error)
     res.status(500).send(getResponse(500, error.error.err));
   });
 };
