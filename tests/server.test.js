@@ -4,6 +4,7 @@ const request = require('supertest');
 const Review = require('../models/review.model');
 const Question = require('../models/question.model');
 const AuthResource = require('../resources/authResource');
+const nock = require('nock');
 
 const AUTHORIZATION = "Authorization";
 const API_PATH = "/api/v1";
@@ -12,23 +13,31 @@ afterAll(done => {
     mongoose.connection.close();
     app.server.close();
     done();
-})
+});
+
+beforeEach(async () => {
+    const scope = nock((process.env.AUTH_URL || 'http://51.103.75.211/api/v1'))
+        .post('/auth/validate')
+        .reply(200, {
+            "userId": "UserForTests"
+        });
+});
 
 describe("Reviews API", async () => {
     let token = "";
-    beforeAll(async () => {
-        const username = "UserForTests";
-        const password = "userfortests";
-        await AuthResource.register(username, "User", "For Tests",
-            "userfortest@yopmail.com", "666111222", password)
-            .then((body) => { }).catch((error) => { console.log(JSON.stringify(error)); });
+    // beforeAll(async () => {
+    //     const username = "UserForTests";
+    //     const password = "userfortests";
+    //     await AuthResource.register(username, "User", "For Tests",
+    //         "userfortest@yopmail.com", "666111222", password)
+    //         .then((body) => { }).catch((error) => { console.log(JSON.stringify(error)); });
 
-        await AuthResource.login(username, password).then((body) => {
-            token = body.token;
-        }).catch((error) => {
-            console.log(JSON.stringify(error));
-        });
-    });
+    //     await AuthResource.login(username, password).then((body) => {
+    //         token = body.token;
+    //     }).catch((error) => {
+    //         console.log(JSON.stringify(error));
+    //     });
+    // });
 
     describe("GET /reviews", () => {
 
@@ -82,6 +91,11 @@ describe("Reviews API", async () => {
         });
 
         it("Should return all reviews", () => {
+            const scope = nock((process.env.AUTH_URL || 'http://51.103.75.211/api/v1'))
+                .post('/auth/validate')
+                .reply(200, {
+                    "userId": "UserForTests"
+                });
             return request(app)
                 .get(API_PATH.concat("/reviews"))
                 .set(AUTHORIZATION, token)
@@ -867,19 +881,19 @@ describe("Reviews API", async () => {
 
 describe("Questions API", async () => {
     let token = "";
-    beforeAll(async () => {
-        const username = "UserForTests";
-        const password = "userfortests";
-        await AuthResource.register(username, "User", "For Tests",
-            "userfortest@yopmail.com", "666111222", password)
-            .then((body) => { }).catch((error) => { console.log(JSON.stringify(error)); });
+    // beforeAll(async () => {
+    //     const username = "UserForTests";
+    //     const password = "userfortests";
+    //     await AuthResource.register(username, "User", "For Tests",
+    //         "userfortest@yopmail.com", "666111222", password)
+    //         .then((body) => { }).catch((error) => { console.log(JSON.stringify(error)); });
 
-        await AuthResource.login(username, password).then((body) => {
-            token = body.token;
-        }).catch((error) => {
-            console.log(JSON.stringify(error));
-        });
-    });
+    //     await AuthResource.login(username, password).then((body) => {
+    //         token = body.token;
+    //     }).catch((error) => {
+    //         console.log(JSON.stringify(error));
+    //     });
+    // });
 
     describe("GET /questions", () => {
 
