@@ -8,6 +8,7 @@ const nock = require('nock');
 
 const AUTHORIZATION = "Authorization";
 const API_PATH = "/api/v1";
+const DUMMY_TOKEN = "123";
 
 afterAll(done => {
     mongoose.connection.close();
@@ -24,21 +25,6 @@ beforeEach(async () => {
 });
 
 describe("Reviews API", async () => {
-    let token = "";
-    // beforeAll(async () => {
-    //     const username = "UserForTests";
-    //     const password = "userfortests";
-    //     await AuthResource.register(username, "User", "For Tests",
-    //         "userfortest@yopmail.com", "666111222", password)
-    //         .then((body) => { }).catch((error) => { console.log(JSON.stringify(error)); });
-
-    //     await AuthResource.login(username, password).then((body) => {
-    //         token = body.token;
-    //     }).catch((error) => {
-    //         console.log(JSON.stringify(error));
-    //     });
-    // });
-
     describe("GET /reviews", () => {
 
         beforeAll(() => {
@@ -98,7 +84,7 @@ describe("Reviews API", async () => {
                 });
             return request(app)
                 .get(API_PATH.concat("/reviews"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(2);
@@ -123,7 +109,7 @@ describe("Reviews API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/reviews"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(review).then((response) => {
                     expect(response.statusCode).toBe(201);
                     expect(response.text).toEqual(expect.stringContaining("Review created successfully."));
@@ -145,7 +131,7 @@ describe("Reviews API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/reviews"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(badReview)
                 .then((response) => {
                     expect(response.statusCode).toBe(500);
@@ -189,7 +175,7 @@ describe("Reviews API", async () => {
         it("Should return the review with the given id", () => {
             return request(app)
                 .get(API_PATH.concat("/reviews/ecf4e877-0bba-424c-996a-dfc753b402b8"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(1);
@@ -205,7 +191,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/reviews/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -244,7 +230,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/ecf4e877-0bba-424c-996a-dfc753b402b8"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(204);
                 });
@@ -257,7 +243,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -295,7 +281,7 @@ describe("Reviews API", async () => {
             return request(app)
                 .put(API_PATH.concat("/reviews/ecf4e877-0bba-424c-996a-dfc753b402b8"))
                 .send(review)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(204);
                 });
@@ -311,7 +297,7 @@ describe("Reviews API", async () => {
             return request(app)
                 .put(API_PATH.concat("/reviews/34"))
                 .send(review)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(404);
                 });
@@ -371,7 +357,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/reviews/client/2"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(2);
@@ -388,7 +374,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/reviews/client/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body.length).toBe(0);
@@ -446,7 +432,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/client/2"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(204);
                 });
@@ -459,7 +445,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/client/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -519,7 +505,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/reviews/product/2"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(2);
@@ -536,7 +522,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/reviews/product/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body.length).toBe(0);
@@ -594,7 +580,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/product/2"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(204);
                 });
@@ -607,7 +593,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/product/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -653,7 +639,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comments"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(2);
@@ -669,7 +655,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/review/34/comments"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -691,7 +677,7 @@ describe("Reviews API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comments"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(comment).then((response) => {
                     expect(response.statusCode).toBe(201);
                     expect(response.text).toEqual(expect.stringContaining("Comment added successfully."));
@@ -711,7 +697,7 @@ describe("Reviews API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/review/34/comments"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(comment)
                 .then((response) => {
                     expect(response.statusCode).toBe(404);
@@ -759,7 +745,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comment/ead85c21-83c3-4c01-a723-331949ab822b"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                 });
@@ -774,7 +760,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/review/34/comment/ead85c21-83c3-4c01-a723-331949ab822b"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -813,7 +799,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comment/ead85c21-83c3-4c01-a723-331949ab822b"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(201);
                 });
@@ -828,7 +814,7 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comment/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -855,7 +841,7 @@ describe("Reviews API", async () => {
             return request(app)
                 .put(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comment/ead85c21-83c3-4c01-a723-331949ab822b"))
                 .send(comment)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(201);
                 });
@@ -871,7 +857,7 @@ describe("Reviews API", async () => {
             return request(app)
                 .put(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comment/34"))
                 .send(comment)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(404);
                 });
@@ -880,21 +866,6 @@ describe("Reviews API", async () => {
 });
 
 describe("Questions API", async () => {
-    let token = "";
-    // beforeAll(async () => {
-    //     const username = "UserForTests";
-    //     const password = "userfortests";
-    //     await AuthResource.register(username, "User", "For Tests",
-    //         "userfortest@yopmail.com", "666111222", password)
-    //         .then((body) => { }).catch((error) => { console.log(JSON.stringify(error)); });
-
-    //     await AuthResource.login(username, password).then((body) => {
-    //         token = body.token;
-    //     }).catch((error) => {
-    //         console.log(JSON.stringify(error));
-    //     });
-    // });
-
     describe("GET /questions", () => {
 
         beforeAll(() => {
@@ -940,7 +911,7 @@ describe("Questions API", async () => {
         it("Should return all questions", () => {
             return request(app)
                 .get(API_PATH.concat("/questions"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(2);
@@ -964,7 +935,7 @@ describe("Questions API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/questions"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(question).then((response) => {
                     expect(response.statusCode).toBe(201);
                     expect(response.text).toEqual(expect.stringContaining("Question created successfully"));
@@ -984,7 +955,7 @@ describe("Questions API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/questions"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(badQuestion)
                 .then((response) => {
                     expect(response.statusCode).toBe(500);
@@ -1022,7 +993,7 @@ describe("Questions API", async () => {
         it("Should return the question with the given id", () => {
             return request(app)
                 .get(API_PATH.concat("/questions/6253511f-0234-4eb2-ba8d-7c8fe04a9951"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(1);
@@ -1038,7 +1009,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/questions/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body.length).toBe(0);
@@ -1073,7 +1044,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/questions/6253511f-0234-4eb2-ba8d-7c8fe04a9951"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(204);
                 });
@@ -1086,7 +1057,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/questions/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -1123,7 +1094,7 @@ describe("Questions API", async () => {
             return request(app)
                 .put(API_PATH.concat("/questions/6253511f-0234-4eb2-ba8d-7c8fe04a9951"))
                 .send(question)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(204);
                 });
@@ -1139,7 +1110,7 @@ describe("Questions API", async () => {
             return request(app)
                 .put(API_PATH.concat("/questions/34"))
                 .send(question)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(404);
                 });
@@ -1191,7 +1162,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/questions/product/1"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(2);
@@ -1208,7 +1179,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/questions/product/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body.length).toBe(0);
@@ -1257,7 +1228,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/questions/product/1"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(204);
                 });
@@ -1270,7 +1241,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/product/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -1311,7 +1282,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/question/6253511f-0234-4eb2-ba8d-7c8fe04a9951/replies"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                     expect(response.body).toBeArrayOfSize(2);
@@ -1327,7 +1298,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/question/34/replies"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -1348,7 +1319,7 @@ describe("Questions API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/question/ecf4e877-0bba-424c-996a-dfc753b402b8/replies"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(reply).then((response) => {
                     expect(response.statusCode).toBe(201);
                     expect(response.text).toEqual(expect.stringContaining("Reply added successfully."));
@@ -1368,7 +1339,7 @@ describe("Questions API", async () => {
             });
 
             return request(app).post(API_PATH.concat("/question/34/replies"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .send(reply)
                 .then((response) => {
                     expect(response.statusCode).toBe(404);
@@ -1413,7 +1384,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/question/6253511f-0234-4eb2-ba8d-7c8fe04a9951/reply/4321511f-1234-4eb2-ba8d-7c8fe04a9951"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(200);
                 });
@@ -1428,7 +1399,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .get(API_PATH.concat("/question/34/reply/4321511f-1234-4eb2-ba8d-7c8fe04a9951"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -1469,7 +1440,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/question/6253511f-0234-4eb2-ba8d-7c8fe04a9951/reply/1231511f-1234-4eb2-ba8d-7c8fe04a9123"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(201);
                 });
@@ -1484,7 +1455,7 @@ describe("Questions API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/question/6253511f-0234-4eb2-ba8d-7c8fe04a9951/reply/34"))
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
                 });
@@ -1511,7 +1482,7 @@ describe("Questions API", async () => {
             return request(app)
                 .put(API_PATH.concat("/question/ecf4e877-0bba-424c-996a-dfc753b402b8/reply/ead85c21-83c3-4c01-a723-331949ab822b"))
                 .send(reply)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(201);
                 });
@@ -1527,7 +1498,7 @@ describe("Questions API", async () => {
             return request(app)
                 .put(API_PATH.concat("/question/ecf4e877-0bba-424c-996a-dfc753b402b8/reply/34"))
                 .send(reply)
-                .set(AUTHORIZATION, token)
+                .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.statusCode).toBe(404);
                 });
