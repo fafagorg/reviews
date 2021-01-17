@@ -24,6 +24,34 @@ class AuthResource {
 
         return request.post(url, options);
     }
+
+    static register(username, name, surname, email, phone, password) {
+        const url = AuthResource.authUrl('/auth/register');
+        const options = {
+            body: {
+                "username": username,
+                "name": name,
+                "surname": surname,
+                "email": email,
+                "phone": phone,
+                "password": password
+            }
+        }
+
+        return request.post(url, options);
+    }
+
+    static login(username, password) {
+        const url = AuthResource.authUrl('/auth/login');
+        const options = {
+            body: {
+                "username": username,
+                "password": password
+            }
+        }
+
+        return request.post(url, options);
+    }
 }
 
 // ----------------- Helper methods -----------------

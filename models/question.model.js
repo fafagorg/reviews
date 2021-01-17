@@ -1,7 +1,10 @@
 var mongoose = require('mongoose')
 
 var QuestionSchema = new mongoose.Schema({
-    questionText: String,
+    questionText: {
+        type: String,
+        required: true
+    },
     dateCreated: String,
     replies: [
         {

@@ -6,17 +6,26 @@ const { v4: uuidv4 } = require('uuid');
 
 
 // GET /api/v1/questions/
-module.exports.getQuestions = function getQuestions(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
-    QuestionModel.find({}).lean().then(question => res.status(200).send(question));
-  }).catch((error) => {
+module.exports.getQuestions = async function getQuestions(req, res, headers, next) {
+  try {
+    let body = await AuthResource.auth(headers.authorization);
+    let doc = await QuestionModel.find().lean();
+    removeUnnecessaryAttributes(doc);
+    res.send(doc)
+  } catch (error) {
+    console.log(error);
     res.status(500).send(getResponse(500, error.error.err));
-  });
+  }
+  // AuthResource.auth(headers.authorization).then((body) => {
+  //   QuestionModel.find({}).lean().then(question => res.status(200).send(question));
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 };
 
 // POST /api/v1/questions/
 module.exports.addQuestion = function addQuestion(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     console.log('Creating question with value:')
     console.log(req.question.value);
     if (!req.question.value) {
@@ -28,7 +37,7 @@ module.exports.addQuestion = function addQuestion(req, res, headers, next) {
     question.dateCreated = new Date().toISOString();
     console.log(question);
 
-    question.save()
+    QuestionModel.create(question)
       .then(doc => {
         if (!doc || doc.length === 0) {
           return res.status(500).send(getResponse(500, "Unexpected error"));
@@ -42,34 +51,66 @@ module.exports.addQuestion = function addQuestion(req, res, headers, next) {
   }).catch((error) => {
     res.status(500).send(getResponse(500, error.error.err));
   });
-};
+}
 
-// GET /api/v1/questions/{questionId}
+// GET /api/v1/questions/{id}
 module.exports.findQuestionByid = function findQuestionByid(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.findOne({ id: req.id.value }).lean().then(question => res.status(200).send(question));
   }).catch((error) => {
     res.status(500).send(getResponse(500, error.error.err));
   });
 };
 
-// DELETE /api/v1/questions/{questionId}
+// DELETE /api/v1/questions/{id}
 module.exports.deleteQuestion = function deleteQuestion(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
-    res.send({
-      message: 'This is the mockup controller for deleteQuestion'
-    });
+  AuthResource.auth(headers.authorization).then((body) => {
+    QuestionModel.deleteOne({
+      id: req.id.value
+    })
+      .then(doc => {
+        if (doc.deletedCount > 0) {
+          return res.status(204).send("Question deleted.");
+        }
+
+        return res.status(404).send(getResponse(404, "Question not found."));
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
   }).catch((error) => {
     res.status(500).send(getResponse(500, error.error.err));
   });
 };
 
-// UPDATE /api/v1/questions/{questionId}
+// PUT /api/v1/questions/{questionId}
 module.exports.updateQuestion = function updateQuestion(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
-    res.send({
-      message: 'This is the mockup controller for updateQuestion'
-    });
+  AuthResource.auth(headers.authorization).then((body) => {
+    var keys = []
+    for (var key in req.question.value) {
+      keys.push(key);
+    }
+
+    if (keys.length === 0) {
+      return res.status(400).send(getResponse(400, "Request body is missing."));
+    }
+
+    QuestionModel.findOneAndUpdate({
+      id: req.id.value
+    }, req.question.value, {
+      new: true,
+      useFindAndModify: false
+    }).lean()
+      .then(doc => {
+        if (doc === null) {
+          return res.status(404).send(getResponse(404, "Question not found."));
+        }
+
+        return res.status(204).send("Question updated.");
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
   }).catch((error) => {
     res.status(500).send(getResponse(500, error.error.err));
   });
@@ -77,9 +118,9 @@ module.exports.updateQuestion = function updateQuestion(req, res, headers, next)
 
 // GET /api/v1/questions/product/{productId}
 module.exports.findQuestionsByProductId = function findQuestionsByProductId(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.find({
-      questionedProductId: req.productId.value
+      productId: req.productId.value
     }).lean()
       .then(doc => {
         removeUnnecessaryAttributes(doc);
@@ -96,9 +137,9 @@ module.exports.findQuestionsByProductId = function findQuestionsByProductId(req,
 
 // DELETE /api/v1/questions/product/{productId}
 module.exports.deleteQuestionsByProductId = function deleteQuestionsByProductId(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.deleteMany({
-      questionedProductId: req.productId.value
+      productId: req.productId.value
     })
       .then(doc => {
         if (doc.deletedCount > 0) {
@@ -117,7 +158,7 @@ module.exports.deleteQuestionsByProductId = function deleteQuestionsByProductId(
 
 // GET /api/v1/question/{id}/replies
 module.exports.findQuestionRepliesById = function findQuestionRepliesById(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.findOne({
       id: req.id.value
     }).lean()
@@ -139,7 +180,7 @@ module.exports.findQuestionRepliesById = function findQuestionRepliesById(req, r
 
 // POST /api/v1/question/{id}/replies
 module.exports.addReplyToQuestion = function addReplyToQuestion(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     var keys = []
     for (var key in req.reply.value) {
       keys.push(key);
@@ -178,7 +219,7 @@ module.exports.addReplyToQuestion = function addReplyToQuestion(req, res, header
 
 // GET /api/v1/question/{questionId}/reply/{replyId}
 module.exports.findQuestionSingleReply = function findQuestionSingleReply(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.findOne({
       id: req.questionId.value
     }).lean()
@@ -208,7 +249,7 @@ module.exports.findQuestionSingleReply = function findQuestionSingleReply(req, r
 
 // DELETE /api/v1/question/{questionId}/reply/{replyId}
 module.exports.deleteReplyFromQuestion = function deleteReplyFromQuestion(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.updateOne(
       { id: req.questionId.value },
       { $pull: { replies: { id: req.replyId.value } } },
@@ -231,7 +272,7 @@ module.exports.deleteReplyFromQuestion = function deleteReplyFromQuestion(req, r
 
 // PUT /api/v1/question/{questionId}/reply/{replyId}
 module.exports.updateReplyFromQuestion = function updateReplyFromQuestion(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
+  AuthResource.auth(headers.authorization).then((body) => {
     var keys = []
     for (var key in req.reply.value) {
       keys.push(key);

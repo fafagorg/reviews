@@ -36,7 +36,7 @@ var options_object = {
 oasTools.configure(options_object);
 
 oasTools.initialize(oasDoc, app, function() {
-  http.createServer(app).listen(serverPort, function() {
+  app.server = http.createServer(app).listen(serverPort, function() {
     console.log("App running at http://localhost:" + serverPort);
     console.log("________________________________________________________________");
     if (options_object.docs !== false) {
@@ -52,3 +52,5 @@ app.get('/info', function(req, res) {
     name: oasDoc.info.title
   });
 });
+
+module.exports = app;

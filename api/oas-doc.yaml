@@ -20,7 +20,7 @@ paths:
       tags:
         - Questions
       parameters:
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -47,7 +47,7 @@ paths:
       tags:
         - Questions
       parameters:
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -84,7 +84,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -115,7 +115,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -142,7 +142,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -165,6 +165,68 @@ paths:
               $ref: '#/components/schemas/question'
         description: Question to be updated
         required: true
+  '/api/v1/questions/product/{productId}':
+    x-swagger-router-controller: questionController
+    get:
+      description: Returns all the questions of the given product id
+      operationId: findQuestionsByProductId
+      tags:
+        - Questions
+      parameters:
+        - name: productId
+          in: path
+          description: id of the questioned product
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: Token needed for authentication
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Questions returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/question'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
+    delete:
+      description: Deletes all the questions of the given product id
+      operationId: deleteQuestionsByProductId
+      tags:
+        - Questions
+      parameters:
+        - name: productId
+          in: path
+          description: ID of the questioned product
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: Token needed for authentication
+          schema:
+            type: string
+          required: true
+      responses:
+        '204':
+          description: Questions deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorModel'
   '/api/v1/question/{id}/replies':
     x-swagger-router-controller: questionController
     get:
@@ -179,7 +241,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -212,7 +274,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -255,7 +317,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -292,7 +354,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -325,7 +387,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -362,7 +424,7 @@ paths:
       tags:
         - Reviews
       parameters:
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -389,7 +451,7 @@ paths:
       tags:
         - Reviews
       parameters:
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -426,7 +488,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -457,7 +519,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -484,7 +546,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -521,7 +583,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -554,7 +616,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -583,7 +645,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -616,7 +678,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -645,7 +707,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -678,7 +740,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -721,7 +783,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -758,7 +820,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
@@ -791,7 +853,7 @@ paths:
           required: true
           schema:
             type: string
-        - name: jwt
+        - name: Authorization
           in: header
           description: Token needed for authentication
           schema:
