@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - develop
+      - dev
     tags:
       - '*'
   pull_request:
@@ -18,9 +18,9 @@ jobs:
       - name: Test using Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '12'
-      - run: yarn install
-      - run: yarn test:ci
+          node-version: '14'
+      - run: npm install --also=dev
+      - run: npm test
       - name: Tests ✅
         if: ${{ success() }}
         run: |
