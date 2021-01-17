@@ -2,6 +2,8 @@
 
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios')
+
+var FormData = require('form-data');
 const AuthResource = require('../resources/authResource')
 var ReviewModel = require("../models/review.model");
 
@@ -25,26 +27,25 @@ module.exports.getReviews = function getReviews(req, res, headers, next) {
 };
 
 // POST /api/v1/reviews
-module.exports.addReview = function addReview(req, res, headers, next) {
-  AuthResource.auth(headers.jwt).then((body) => {
-
-      
-    axios({
+module.exports.addReview = async function addReview(req, res, headers, next) {
+  AuthResource.auth(headers.jwt).then(async function (body) {
+  
+    var data = new FormData();
+    data.append('text', req.review.value.title);
+   
+    var config = {
       method: 'post',
       url: 'https://api.deepai.org/api/sentiment-analysis',
       headers: {
-        'api-key': '91447500-7bcd-4998-92e3-17bd7f40a52c'
+        'api-key': process.env.API_KEY_DEEPAI,
+        ...data.getHeaders()
       },
-      data: {
-        text: 'Thanks'
-      }
-    }).then((response) => {
-      console.log(response);
-    }, (error) => {
-      console.log(error);
-    });
+      data: data
+    };
+    var resp = await axios(config)
 
 
+    
     var keys = []
     for (var key in req.review.value) {
       keys.push(key);
@@ -53,13 +54,12 @@ module.exports.addReview = function addReview(req, res, headers, next) {
     if (keys.length === 0) {
       return res.status(400).send(getResponse(400, "Request body is missing."));
     }
-
     var review = new ReviewModel(req.review.value);
 
     review.id = uuidv4();
     review.dateCreated = new Date().toISOString();
-    review.externalScore = 'neutral';
-   
+    review.externalScore = resp.data.output[0]
+
 
     review.save()
       .then(doc => {
