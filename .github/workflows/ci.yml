@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - develop
+      - dev
     tags:
       - '*'
   pull_request:
@@ -11,6 +11,24 @@ on:
       - '*'
 
 jobs:
+  run-unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test using Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - run: npm install --also=dev
+      - run: npm test
+      - name: Tests ✅
+        if: ${{ success() }}
+        run: echo Tests execution was successful!
+      - name: Tests 🚨
+        if: ${{ failure() }}
+        run: echo Tests execution failed!
+
   cleanup-runs:
     runs-on: ubuntu-latest
     steps:
