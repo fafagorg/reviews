@@ -49,7 +49,7 @@ module.exports.addReview = async function addReview(req, res, headers, next) {
       method: 'post',
       url: 'https://api.deepai.org/api/sentiment-analysis',
       headers: {
-        'api-key': process.env.API_KEY_DEEPAI,
+        'api-key': (process.env.API_KEY_DEEPAI || 'NO-API-KEY'),
         ...data.getHeaders()
       },
       data: data
@@ -84,7 +84,7 @@ module.exports.addReview = async function addReview(req, res, headers, next) {
       })
   }).catch((error) => {
     console.log(error)
-    res.status(500).send(getResponse(500, error.error.err));
+    res.status(500).send(getResponse(500, error));
   });
 };
 
