@@ -22,6 +22,15 @@ beforeEach(async () => {
         .reply(200, {
             "userId": "UserForTests"
         });
+
+    const scopeIntegration = nock("https://api.deepai.org/api")
+        .post('/sentiment-analysis')
+        .reply(200, {
+            "id": "c7659eb6-4f04-4135-81a7-6debaccb3517",
+            "output": [
+                "Neutral"
+            ]
+        });
 });
 
 describe("Reviews API", async () => {
