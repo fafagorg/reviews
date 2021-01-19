@@ -13,7 +13,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var database = require('./db');
 
-database.connect();
+database.connect(false);
 
 app.use(bodyParser.json({
   strict: false
