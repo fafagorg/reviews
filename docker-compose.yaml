@@ -1,0 +1,33 @@
+version: '2.2'
+
+services:
+  api-reviews:
+    container_name: api-reviews
+    image: fafagoreviews/reviews:latest
+    expose:
+      - 8080
+    networks:
+      - nginx
+    environment:
+      - DB_SSL=false
+      - DB_AUTH=false
+      - DB_SERVER=mongo-reviews
+      - DB_PORT=27017
+      - DB_NAME=fafago_production
+      - ENVIRONMENT=production
+      - AUTH_URL=http://54.166.214.73/api/v1
+  mongo_reviews:
+    container_name: mongo_reviews
+    image: mongo
+    networks:
+      nginx:
+        aliases:
+          - mongo_reviews
+    volumes:
+      - 'mongodb-volume:/data/db'
+networks:
+  nginx:
+    external: true
+volumes:
+  mongodb-volume:
+    external: false
