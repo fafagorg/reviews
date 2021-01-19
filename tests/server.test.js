@@ -9,18 +9,30 @@ const nock = require('nock');
 const AUTHORIZATION = "Authorization";
 const API_PATH = "/api/v1";
 const DUMMY_TOKEN = "123";
+let scope = null;
+let scopeIntegration = null;
 
 afterAll(done => {
     mongoose.connection.close();
     app.server.close();
+    nock.cleanAll();
     done();
 });
 
 beforeEach(async () => {
-    const scope = nock((process.env.AUTH_URL || 'http://51.103.75.211/api/v1'))
+    scope = nock((process.env.AUTH_URL || 'http://51.103.75.211/api/v1'))
         .post('/auth/validate')
         .reply(200, {
             "userId": "UserForTests"
+        });
+
+    scopeIntegration = nock("https://api.deepai.org/api")
+        .post('/sentiment-analysis')
+        .reply(200, {
+            "id": "c7659eb6-4f04-4135-81a7-6debaccb3517",
+            "output": [
+                "Neutral"
+            ]
         });
 });
 
