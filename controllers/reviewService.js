@@ -10,13 +10,13 @@ var ReviewModel = require("../models/review.model");
 // GET /api/v1/reviews
 module.exports.getReviews = async function getReviews(req, res, headers, next) {
   try {
-      let body = await AuthResource.auth(headers.authorization);
+      //let body = await AuthResource.auth(headers.authorization);
       let doc = await ReviewModel.find().lean();
       removeUnnecessaryAttributes(doc);
       res.send(doc); 
   } catch (error) {
       console.log(error);
-      res.status(500).send(getResponse(500, error.error.err));
+      res.status(500).send(getResponse(500, error));
   }
 }
 
@@ -90,7 +90,7 @@ module.exports.addReview = async function addReview(req, res, headers, next) {
 
 // GET /api/v1/reviews/{id}
 module.exports.findReviewByid = function findReviewByid(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  //AuthResource.auth(headers.authorization).then((body) => {
     ReviewModel.findOne({
       id: req.id.value
     }).lean()
@@ -105,9 +105,9 @@ module.exports.findReviewByid = function findReviewByid(req, res, headers, next)
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // DELETE /api/v1/reviews/{id}
@@ -166,7 +166,7 @@ module.exports.updateReview = function updateReview(req, res, headers, next) {
 
 // GET /api/v1/reviews/client/{clientId}
 module.exports.findReviewsByClientId = function findReviewsByClientId(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     ReviewModel.find({
       reviewedClientId: req.clientId.value
     }).lean()
@@ -178,9 +178,9 @@ module.exports.findReviewsByClientId = function findReviewsByClientId(req, res, 
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // DELETE /api/v1/reviews/client/{clientId}
@@ -206,7 +206,7 @@ module.exports.deleteReviewsByClientId = function deleteReviewsByClientId(req, r
 
 // GET /api/v1/reviews/product/{productId}
 module.exports.findReviewsByProductId = function findReviewsByProductId(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     ReviewModel.find({
       reviewedProductId: req.productId.value
     }).lean()
@@ -218,9 +218,9 @@ module.exports.findReviewsByProductId = function findReviewsByProductId(req, res
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // DELETE /api/v1/reviews/product/{productId}
@@ -246,7 +246,7 @@ module.exports.deleteReviewsByProductId = function deleteReviewsByProductId(req,
 
 // GET /api/v1/review/{id}/comments
 module.exports.findReviewCommentsById = function findReviewCommentsById(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     ReviewModel.findOne({
       id: req.id.value
     }).lean()
@@ -261,9 +261,9 @@ module.exports.findReviewCommentsById = function findReviewCommentsById(req, res
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // POST /api/v1/review/{id}/comments
@@ -307,7 +307,7 @@ module.exports.addCommentToReview = function addCommentToReview(req, res, header
 
 // GET /api/v1/review/{reviewId}/comment/{commentId}
 module.exports.findReviewSingleComment = function findReviewSingleComment(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     ReviewModel.findOne({
       id: req.reviewId.value
     }).lean()
@@ -330,9 +330,9 @@ module.exports.findReviewSingleComment = function findReviewSingleComment(req, r
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // DELETE /api/v1/review/{reviewId}/comment/{commentId}
