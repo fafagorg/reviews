@@ -8,13 +8,13 @@ const { v4: uuidv4 } = require('uuid');
 // GET /api/v1/questions/
 module.exports.getQuestions = async function getQuestions(req, res, headers, next) {
   try {
-    let body = await AuthResource.auth(headers.authorization);
+    // let body = await AuthResource.auth(headers.authorization);
     let doc = await QuestionModel.find().lean();
     removeUnnecessaryAttributes(doc);
     res.send(doc)
   } catch (error) {
     console.log(error);
-    res.status(500).send(getResponse(500, error.error.err));
+    res.status(500).send(getResponse(500, error));
   }
   // AuthResource.auth(headers.authorization).then((body) => {
   //   QuestionModel.find({}).lean().then(question => res.status(200).send(question));
@@ -55,11 +55,11 @@ module.exports.addQuestion = function addQuestion(req, res, headers, next) {
 
 // GET /api/v1/questions/{id}
 module.exports.findQuestionByid = function findQuestionByid(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.findOne({ id: req.id.value }).lean().then(question => res.status(200).send(question));
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 };
 
 // DELETE /api/v1/questions/{id}
@@ -118,7 +118,7 @@ module.exports.updateQuestion = function updateQuestion(req, res, headers, next)
 
 // GET /api/v1/questions/product/{productId}
 module.exports.findQuestionsByProductId = function findQuestionsByProductId(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.find({
       productId: req.productId.value
     }).lean()
@@ -130,9 +130,9 @@ module.exports.findQuestionsByProductId = function findQuestionsByProductId(req,
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // DELETE /api/v1/questions/product/{productId}
@@ -158,7 +158,7 @@ module.exports.deleteQuestionsByProductId = function deleteQuestionsByProductId(
 
 // GET /api/v1/question/{id}/replies
 module.exports.findQuestionRepliesById = function findQuestionRepliesById(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.findOne({
       id: req.id.value
     }).lean()
@@ -173,9 +173,9 @@ module.exports.findQuestionRepliesById = function findQuestionRepliesById(req, r
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // POST /api/v1/question/{id}/replies
@@ -219,7 +219,7 @@ module.exports.addReplyToQuestion = function addReplyToQuestion(req, res, header
 
 // GET /api/v1/question/{questionId}/reply/{replyId}
 module.exports.findQuestionSingleReply = function findQuestionSingleReply(req, res, headers, next) {
-  AuthResource.auth(headers.authorization).then((body) => {
+  // AuthResource.auth(headers.authorization).then((body) => {
     QuestionModel.findOne({
       id: req.questionId.value
     }).lean()
@@ -242,9 +242,9 @@ module.exports.findQuestionSingleReply = function findQuestionSingleReply(req, r
       .catch(err => {
         res.status(500).send(err);
       });
-  }).catch((error) => {
-    res.status(500).send(getResponse(500, error.error.err));
-  });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
 }
 
 // DELETE /api/v1/question/{questionId}/reply/{replyId}
