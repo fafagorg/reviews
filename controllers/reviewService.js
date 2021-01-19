@@ -84,7 +84,7 @@ module.exports.addReview = async function addReview(req, res, headers, next) {
       })
   }).catch((error) => {
     console.log(error)
-    res.status(500).send(getResponse(500, error));
+    res.status(500).send(getResponse(500, JSON.stringify(error)));
   });
 };
 

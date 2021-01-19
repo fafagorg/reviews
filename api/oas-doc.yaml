@@ -19,13 +19,6 @@ paths:
       operationId: getQuestions
       tags:
         - Questions
-      parameters:
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Question List
@@ -84,12 +77,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Question returned
@@ -179,12 +166,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Questions returned
@@ -241,12 +222,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Replies returned
@@ -317,12 +292,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Reply returned
@@ -423,13 +392,6 @@ paths:
       operationId: getReviews
       tags:
         - Reviews
-      parameters:
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Review List
@@ -488,12 +450,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Review returned
@@ -583,12 +539,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Reviews returned
@@ -645,12 +595,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Reviews returned
@@ -707,12 +651,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Comments returned
@@ -783,12 +721,6 @@ paths:
           required: true
           schema:
             type: string
-        - name: Authorization
-          in: header
-          description: Token needed for authentication
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Comment returned
