@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reviews-$BRANCH_NAME
+  namespace: app
+  labels:
+    app: reviews-$BRANCH_NAME
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reviews-$BRANCH_NAME
+  template:
+    metadata:
+      labels:
+        app: reviews-$BRANCH_NAME
+    spec:
+      containers:
+      - name: reviews
+        image: $DOCKER_IMAGES
+        ports:
+        - containerPort: 80
+        env:
+          - name: ENVIRONMENT
+            value: production
+          - name: DB_SERVER
+            value: localhost
+          - name: DB_NAME
+            value: fafago_production
+          - name: PORT
+            value: "8080"
+          - name: AUTH_URL
+            value: https://10.0.14.63:80
+      - name: mongo
+        image: mongo:4.4.3-bionic
+        ports:
+        - containerPort: 27017
