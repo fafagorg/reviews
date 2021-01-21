@@ -46,7 +46,7 @@ oasTools.initialize(oasDoc, app, function() {
   });
 });
 
-app.get('/info', function(req, res) {
+app.get('/', function(req, res) {
   res.send({
     info: "This API was generated using oas-generator!",
     name: oasDoc.info.title
