@@ -28,7 +28,7 @@ spec:
           - name: DB_NAME
             value: fafago_production
           - name: PORT
-            value: "8080"
+            value: "80"
           - name: AUTH_URL
             value: https://10.0.3.134:80
       - name: mongo
