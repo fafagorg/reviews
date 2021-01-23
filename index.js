@@ -12,6 +12,7 @@ var express = require("express");
 var app = express();
 var bodyParser = require('body-parser');
 var database = require('./db');
+var cors = require('cors')
 
 database.connect(false);
 
@@ -35,6 +36,9 @@ var options_object = {
 
 oasTools.configure(options_object);
 
+app.use(cors())
+
+
 oasTools.initialize(oasDoc, app, function() {
   app.server = http.createServer(app).listen(serverPort, function() {
     console.log("App running at http://localhost:" + serverPort);
@@ -52,5 +56,6 @@ app.get('/', function(req, res) {
     name: oasDoc.info.title
   });
 });
+
 
 module.exports = app;
