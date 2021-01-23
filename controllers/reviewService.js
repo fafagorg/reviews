@@ -183,6 +183,26 @@ module.exports.findReviewsByClientId = function findReviewsByClientId(req, res, 
   // });
 }
 
+
+// GET /api/v1/reviews/client/{clientId}
+module.exports.findReviewsByAuthorId = function findReviewsByAuthorId(req, res, headers, next) {
+  // AuthResource.auth(headers.authorization).then((body) => {
+    ReviewModel.find({
+      reviewerClientId: req.clientId.value
+    }).lean()
+      .then(doc => {
+        removeUnnecessaryAttributes(doc);
+
+        res.send(doc);
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
+  // }).catch((error) => {
+  //   res.status(500).send(getResponse(500, error.error.err));
+  // });
+}
+
 // DELETE /api/v1/reviews/client/{clientId}
 module.exports.deleteReviewsByClientId = function deleteReviewsByClientId(req, res, headers, next) {
   AuthResource.auth(headers.authorization).then((body) => {
@@ -203,6 +223,28 @@ module.exports.deleteReviewsByClientId = function deleteReviewsByClientId(req, r
     res.status(500).send(getResponse(500, error.error.err));
   });
 }
+
+// DELETE /api/v1/reviews/author/{clientId}
+module.exports.deleteReviewsByAuthorId = function deleteReviewsByAuthorId(req, res, headers, next) {
+  AuthResource.auth(headers.authorization).then((body) => {
+    ReviewModel.deleteMany({
+      reviewerClientId: req.clientId.value
+    })
+      .then(doc => {
+        if (doc.deletedCount > 0) {
+          return res.status(204).send("Reviews deleted.");
+        }
+
+        return res.status(404).send(getResponse(404, "Client id not found."));
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      });
+  }).catch((error) => {
+    res.status(500).send(getResponse(500, error.error.err));
+  });
+}
+
 
 // GET /api/v1/reviews/product/{productId}
 module.exports.findReviewsByProductId = function findReviewsByProductId(req, res, headers, next) {

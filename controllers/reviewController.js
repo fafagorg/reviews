@@ -26,9 +26,17 @@ module.exports.findReviewsByClientId = function findReviewsByClientId(req, res, 
   reviewService.findReviewsByClientId(req.swagger.params, res, req.headers, next);
  };
 
+ module.exports.findReviewsByAuthorId = function findReviewsByAuthorId(req, res, next) {
+  reviewService.findReviewsByAuthorId(req.swagger.params, res, req.headers, next);
+ };
+
 module.exports.deleteReviewsByClientId = function deleteReviewsByClientId(req, res, next) {
  reviewService.deleteReviewsByClientId(req.swagger.params, res, req.headers, next);
 };
+
+module.exports.deleteReviewsByAuthorId = function deleteReviewsByAuthorId(req, res, next) {
+  reviewService.deleteReviewsByAuthorId(req.swagger.params, res, req.headers, next);
+ };
 
 module.exports.findReviewsByProductId = function findReviewsByProductId(req, res, next) {
  reviewService.findReviewsByProductId(req.swagger.params, res, req.headers, next);
