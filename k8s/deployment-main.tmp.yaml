@@ -35,3 +35,10 @@ spec:
         image: mongo:4.4.3-bionic
         ports:
         - containerPort: 27017
+        volumeMounts:
+          - mountPath: "/data"
+            name: reviews-main
+      volumes:
+        - name: reviews-main
+          persistentVolumeClaim:
+            claimName: reviews-main

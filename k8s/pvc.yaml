@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: reviews-main
+  namespace: app
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/data/reviews/pro"
+  claimRef:
+    name: reviews-main
+    namespace: app
+---
+apiVersion: apps/v1  
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: reviews-main
+  namespace: app
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: apps/v1
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: reviews-release
+  namespace: app
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/data/reviews/pre"
+  claimRef:
+    name: reviews-release
+    namespace: app
+---
+apiVersion: apps/v1  
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: reviews-release
+  namespace: app
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
+apiVersion: apps/v1
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: reviews-develop
+  namespace: app
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/data/reviews/dev"
+  claimRef:
+    name: reviews-develop
+    namespace: app
+---
+apiVersion: apps/v1  
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: reviews-develop
+  namespace: app
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Mi
+---
