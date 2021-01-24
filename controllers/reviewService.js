@@ -48,9 +48,14 @@ module.exports.addReview = async function addReview(req, res, headers, next) {
     }
     var review = new ReviewModel(req.review.value);
 
+    let decoded = jwtDecode(headers.authorization);
+
+    let loggedUserId = decoded.user._id;
+
     review.id = uuidv4();
     review.dateCreated = new Date().toISOString();
-    review.externalScore = resp.data.output[0]
+    review.externalScore = resp.data.output[0];
+    review.reviewerClientId = loggedUserId;
 
 
     ReviewModel.create(review)
@@ -322,9 +327,13 @@ module.exports.addCommentToReview = function addCommentToReview(req, res, header
       return res.status(400).send(getResponse(400, "Request body is missing."));
     }
 
+    let decoded = jwtDecode(headers.authorization);
+
+    let loggedUserId = decoded.user._id;
+
     var comment = {
       id: uuidv4(),
-      clientId: req.comment.value.clientId,
+      clientId: loggedUserId,
       body: req.comment.value.body,
       date: new Date().toISOString()
     }
