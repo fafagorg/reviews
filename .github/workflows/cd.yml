@@ -17,17 +17,17 @@ jobs:
     strategy:
       fail-fast: true
     steps:
-      - run: export DOCKER_IMAGES=fafagoreviews/reviews &&
-      - run: export BRANCH_NAME=develop &&
-      - run: /usr/bin/envsubst < k8s/deployment-$BRANCH_NAME.tmp.yaml > k8s/deployment.yaml &&
-      - run: /usr/bin/envsubst < k8s/service.tmp.yaml > k8s/service.yaml &&
-      - run: $GCLOUD_API_KEY >> account.json &&
+      - run: export DOCKER_IMAGES=fafagoreviews/reviews
+      - run: export BRANCH_NAME=develop
+      - run: /usr/bin/envsubst < k8s/deployment-$BRANCH_NAME.tmp.yaml > k8s/deployment.yaml
+      - run: /usr/bin/envsubst < k8s/service.tmp.yaml > k8s/service.yaml
+      - run: $GCLOUD_API_KEY >> account.json
         env:
           GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
-      - run: gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json &&
-      - run: gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us &&
-      - run: kubectl apply -f k8s/deployment.yaml &&
-      - run: kubectl apply -f k8s/service.yaml &&
+      - run: gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json
+      - run: gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us
+      - run: kubectl apply -f k8s/deployment.yaml
+      - run: kubectl apply -f k8s/service.yaml
       - run: kubectl rollout status deployment.apps/reviews-$BRANCH_NAME -n app
   dockerProd:
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push'}}
