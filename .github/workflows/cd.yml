@@ -5,13 +5,12 @@ on:
       - main
       - dev
       - CDCI
-      - ContinuosDeployment
     tags:
       - 'v*'
 
 jobs:
   dockerDev:
-    if: ${{ github.ref == 'refs/heads/ContinuosDeployment' && github.event_name == 'push'}}
+    if: ${{ github.ref == 'refs/heads/dev' && github.event_name == 'push'}}
     name: Build and push Docker images 
     runs-on: ubuntu-latest
     strategy:
@@ -37,33 +36,6 @@ jobs:
           tags: fafagoreviews/reviews:dev
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}  
-
-  gCloudDeployment-Dev:
-    if: ${{ github.ref == 'refs/heads/ContinuosDeployment' && github.event_name == 'push'}}
-    name: Deploy DEVELOPMENT code automatically to google cloud
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-    needs: dockerDev
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.2
-      - name: Set up QEMU
-        env:
-          GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
-        run: |
-          export DOCKER_IMAGES=fafagoreviews/reviews:dev
-          export BRANCH_NAME=develop
-          echo $(ls)
-          /usr/bin/envsubst < ./k8s/deployment-$BRANCH_NAME.tmp.yaml > ./k8s/deployment.yaml
-          /usr/bin/envsubst < ./k8s/service.tmp.yaml > ./k8s/service.yaml
-          echo "$GCLOUD_API_KEY" > account.json
-          gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json
-          gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us
-          kubectl apply -f ./k8s/deployment.yaml
-          kubectl apply -f ./k8s/service.yaml
-          kubectl rollout status deployment.apps/reviews-$BRANCH_NAME -n app
   dockerProd:
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push'}}
     name: Build and push Docker images 
@@ -91,3 +63,58 @@ jobs:
           tags: fafagoreviews/reviews:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }} 
+
+  gCloudDeployment-Dev:
+    if: ${{ github.ref == 'refs/heads/dev' && github.event_name == 'push'}}
+    name: Deploy DEVELOPMENT code automatically to google cloud
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    needs: dockerDev
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+      - name: Set up QEMU
+        env:
+          GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
+        run: |
+          export DOCKER_IMAGES=fafagoreviews/reviews:dev
+          export BRANCH_NAME=develop
+          echo $(ls)
+          /usr/bin/envsubst < ./k8s/deployment-$BRANCH_NAME.tmp.yaml > ./k8s/deployment.yaml
+          /usr/bin/envsubst < ./k8s/service.tmp.yaml > ./k8s/service.yaml
+          echo "$GCLOUD_API_KEY" > account.json
+          gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json
+          gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us
+          kubectl apply -f ./k8s/deployment.yaml
+          kubectl apply -f ./k8s/service.yaml
+          kubectl rollout status deployment.apps/reviews-$BRANCH_NAME -n app
+  gCloudDeployment-Prod:
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push'}}
+    name: Deploy PRODUCTION code automatically to google cloud
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    needs: dockerProd
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+      - name: Set up QEMU
+        env:
+          GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
+        run: |
+          export DOCKER_IMAGES=fafagoreviews/reviews:dev
+          export BRANCH_NAME=main
+          echo $(ls)
+          /usr/bin/envsubst < ./k8s/deployment-$BRANCH_NAME.tmp.yaml > ./k8s/deployment.yaml
+          /usr/bin/envsubst < ./k8s/service.tmp.yaml > ./k8s/service.yaml
+          echo "$GCLOUD_API_KEY" > account.json
+          gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json
+          gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us
+          kubectl apply -f ./k8s/deployment.yaml
+          kubectl apply -f ./k8s/service.yaml
+          kubectl rollout status deployment.apps/reviews-$BRANCH_NAME -n app
+
+
