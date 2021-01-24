@@ -8,7 +8,7 @@ const nock = require('nock');
 
 const AUTHORIZATION = "Authorization";
 const API_PATH = "/api/v1";
-const DUMMY_TOKEN = "123";
+const DUMMY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwMDQzN2Q5ODU2MzllNDdkYWQ4MmQ4NyIsInVzZXJuYW1lIjoiVGVzdEp1YW5taSIsIm5hbWUiOiJKdWFubWkiLCJzdXJuYW1lIjoiQmxhbmNvIiwiZW1haWwiOiJqdWFibGFmZXJAYWx1bS51cy5lcyIsInBob25lIjoiNjY2MTExMjIyIiwiX192IjowfSwiaWF0IjoxNjExNTAzNjM3LCJleHAiOjE2MTE1OTAwMzd9.jif7EwqqJ2dfyiaQHFyBU3K2qDartO-u3CkIWu04GtM";
 let scope = null;
 let scopeIntegration = null;
 
@@ -212,13 +212,13 @@ describe("Reviews API", async () => {
     });
 
     describe("DELETE /reviews/{id}", () => {
+        let review = {};
         beforeAll(() => {
-            const reviews = [
-                {
+            review = {
                     "title": "Test 2",
                     "score": 3,
                     "description": "Good thing",
-                    "reviewerClientId": "2",
+                    "reviewerClientId": "600437d985639e47dad82d87",
                     "reviewedProductId": "2",
                     "reviewedClientId": "2",
                     "comments": [
@@ -231,13 +231,18 @@ describe("Reviews API", async () => {
                     ],
                     "id": "ecf4e877-0bba-424c-996a-dfc753b402b8",
                     "dateCreated": "2021-01-08T14:50:51.850Z"
-                }
-            ];
+                };
         });
 
         it("Should delete the review with the given id and return 204", () => {
             Review.deleteOne = jest.fn().mockImplementation(() => {
                 return Promise.resolve({ deletedCount: 1 })
+            });
+
+            Review.findOne = jest.fn().mockImplementation(() => {
+                return {
+                    lean: jest.fn(() => Promise.resolve(review))
+                }
             });
 
             return request(app)
@@ -395,6 +400,85 @@ describe("Reviews API", async () => {
 
     });
 
+    describe("GET /reviews/author/{clientId}", () => {
+        let reviews = [];
+        beforeEach(() => {
+            reviews = [
+                {
+                    "title": "Test 2",
+                    "score": 3,
+                    "description": "Good thing",
+                    "reviewerClientId": "2",
+                    "reviewedProductId": "2",
+                    "reviewedClientId": "2",
+                    "comments": [
+                        {
+                            "id": "ead85c21-83c3-4c01-a723-331949ab822b",
+                            "clientId": "2",
+                            "body": "Comment 2",
+                            "date": "2021-01-08T14:51:58.373Z"
+                        }
+                    ],
+                    "id": "ecf4e877-0bba-424c-996a-dfc753b402b8",
+                    "dateCreated": "2021-01-08T14:50:51.850Z"
+                },
+                {
+                    "title": "Test 3",
+                    "score": 1,
+                    "description": "Bad thing",
+                    "reviewerClientId": "2",
+                    "reviewedProductId": "2",
+                    "reviewedClientId": "2",
+                    "comments": [
+                        {
+                            "id": "ead85c21-83c3-4c01-a723-331969ac822b",
+                            "clientId": "2",
+                            "body": "Comment 1",
+                            "date": "2021-01-08T18:51:58.373Z"
+                        }
+                    ],
+                    "id": "abc4e877-0bba-424c-996a-dfc753b402b9",
+                    "dateCreated": "2021-01-10T14:50:51.850Z"
+                }
+            ];
+        });
+
+
+        it("Should return the reviews of the author with the given id", () => {
+            Review.find = jest.fn().mockImplementation(() => {
+                return {
+                    lean: jest.fn(() => Promise.resolve(reviews))
+                }
+            });
+
+            return request(app)
+                .get(API_PATH.concat("/reviews/author/2"))
+                .set(AUTHORIZATION, DUMMY_TOKEN)
+                .then((response) => {
+                    expect(response.status).toBe(200);
+                    expect(response.body).toBeArrayOfSize(2);
+                });
+        });
+
+        it("Should return an empty list because the client with the given id does not have any review", () => {
+            reviews.length = 0;
+            Review.find = jest.fn().mockImplementation(() => {
+                return {
+                    lean: jest.fn(() => Promise.resolve(reviews))
+                }
+            });
+
+            return request(app)
+                .get(API_PATH.concat("/reviews/author/34"))
+                .set(AUTHORIZATION, DUMMY_TOKEN)
+                .then((response) => {
+                    expect(response.status).toBe(200);
+                    expect(response.body.length).toBe(0);
+                });
+        });
+
+    });
+
     describe("DELETE /reviews/client/{clientId}", () => {
         beforeAll(() => {
             let reviews = [
@@ -457,6 +541,76 @@ describe("Reviews API", async () => {
 
             return request(app)
                 .delete(API_PATH.concat("/reviews/client/34"))
+                .set(AUTHORIZATION, DUMMY_TOKEN)
+                .then((response) => {
+                    expect(response.status).toBe(404);
+                });
+        });
+    });
+
+
+    describe("DELETE /reviews/author/{clientId}", () => {
+        beforeAll(() => {
+            let reviews = [
+                {
+                    "title": "Test 2",
+                    "score": 3,
+                    "description": "Good thing",
+                    "reviewerClientId": "2",
+                    "reviewedProductId": "2",
+                    "reviewedClientId": "2",
+                    "comments": [
+                        {
+                            "id": "ead85c21-83c3-4c01-a723-331949ab822b",
+                            "clientId": "2",
+                            "body": "Comment 2",
+                            "date": "2021-01-08T14:51:58.373Z"
+                        }
+                    ],
+                    "id": "ecf4e877-0bba-424c-996a-dfc753b402b8",
+                    "dateCreated": "2021-01-08T14:50:51.850Z"
+                },
+                {
+                    "title": "Test 3",
+                    "score": 1,
+                    "description": "Bad thing",
+                    "reviewerClientId": "2",
+                    "reviewedProductId": "2",
+                    "reviewedClientId": "2",
+                    "comments": [
+                        {
+                            "id": "ead85c21-83c3-4c01-a723-331969ac822b",
+                            "clientId": "2",
+                            "body": "Comment 1",
+                            "date": "2021-01-08T18:51:58.373Z"
+                        }
+                    ],
+                    "id": "abc4e877-0bba-424c-996a-dfc753b402b9",
+                    "dateCreated": "2021-01-10T14:50:51.850Z"
+                }
+            ];
+        });
+
+        it("Should delete all the reviews of the author with the given id and return 204", () => {
+            Review.deleteMany = jest.fn().mockImplementation(() => {
+                return Promise.resolve({ deletedCount: 2 })
+            });
+
+            return request(app)
+                .delete(API_PATH.concat("/reviews/author/2"))
+                .set(AUTHORIZATION, DUMMY_TOKEN)
+                .then((response) => {
+                    expect(response.status).toBe(204);
+                });
+        });
+
+        it("Should return 404 since the given author id does not exist", () => {
+            Review.deleteMany = jest.fn().mockImplementation(() => {
+                return Promise.resolve({ deletedCount: 0 })
+            });
+
+            return request(app)
+                .delete(API_PATH.concat("/reviews/author/34"))
                 .set(AUTHORIZATION, DUMMY_TOKEN)
                 .then((response) => {
                     expect(response.status).toBe(404);
@@ -781,8 +935,9 @@ describe("Reviews API", async () => {
     });
 
     describe("DELETE /review/{reviewId}/comment/{commentId}", () => {
+        let review = {};
         beforeAll(() => {
-            let reviews = {
+            review = {
                 "title": "Test 2",
                 "score": 3,
                 "description": "Good thing",
@@ -792,7 +947,7 @@ describe("Reviews API", async () => {
                 "comments": [
                     {
                         "id": "ead85c21-83c3-4c01-a723-331949ab822b",
-                        "clientId": "2",
+                        "clientId": "600437d985639e47dad82d87",
                         "body": "Comment 2",
                         "date": "2021-01-08T14:51:58.373Z"
                     }
@@ -809,6 +964,12 @@ describe("Reviews API", async () => {
                 }
             });
 
+            Review.findOne = jest.fn().mockImplementation(() => {
+                return {
+                    lean: jest.fn(() => Promise.resolve(review))
+                }
+            });
+
             return request(app)
                 .delete(API_PATH.concat("/review/ecf4e877-0bba-424c-996a-dfc753b402b8/comment/ead85c21-83c3-4c01-a723-331949ab822b"))
                 .set(AUTHORIZATION, DUMMY_TOKEN)
@@ -821,6 +982,12 @@ describe("Reviews API", async () => {
             Review.updateOne = jest.fn().mockImplementation(() => {
                 return {
                     lean: jest.fn(() => Promise.resolve({ n: 0 }))
+                }
+            });
+
+            Review.findOne = jest.fn().mockImplementation(() => {
+                return {
+                    lean: jest.fn(() => Promise.resolve(review))
                 }
             });
 

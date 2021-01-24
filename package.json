@@ -21,6 +21,7 @@
     "express": "^4.16.3",
     "formdata": "^0.10.4",
     "js-yaml": "^3.3.0",
+    "jwt-decode": "^3.1.2",
     "mongoose": "^5.11.9",
     "nock": "^13.0.5",
     "oas-tools": "^2.1.4",
