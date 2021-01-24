@@ -29,7 +29,7 @@ jobs:
           echo $(ls)
           /usr/bin/envsubst < ./k8s/deployment-$BRANCH_NAME.tmp.yaml > ./k8s/deployment.yaml
           /usr/bin/envsubst < ./k8s/service.tmp.yaml > ./k8s/service.yaml
-          $GCLOUD_API_KEY >> account.json
+          $GCLOUD_API_KEY > account.json
           gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json
           gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us
           kubectl apply -f ./k8s/deployment.yaml
