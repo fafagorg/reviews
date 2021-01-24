@@ -18,7 +18,9 @@ jobs:
       fail-fast: true
     steps:
       - name: Set up QEMU
-        run: |
+      env:
+        GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
+      run: |
           export DOCKER_IMAGES=fafagoreviews/reviews &&
   export BRANCH_NAME=develop &&
         /usr/bin/envsubst < k8s/deployment-$BRANCH_NAME.tmp.yaml > k8s/deployment.yaml &&
