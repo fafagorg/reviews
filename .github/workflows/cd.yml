@@ -53,7 +53,7 @@ jobs:
         env:
           GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
         run: |
-          export DOCKER_IMAGES=fafagoreviews/reviews
+          export DOCKER_IMAGES=fafagoreviews/reviews:dev
           export BRANCH_NAME=develop
           echo $(ls)
           /usr/bin/envsubst < ./k8s/deployment-$BRANCH_NAME.tmp.yaml > ./k8s/deployment.yaml
