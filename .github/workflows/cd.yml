@@ -78,6 +78,7 @@ jobs:
       - name: Set up QEMU
         env:
           GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
+          API_KEY_DEEPAI_B64: "${{ secrets.API_KEY_DEEPAI_B64 }}"
         run: |
           export DOCKER_IMAGES=fafagoreviews/reviews:dev
           export BRANCH_NAME=develop

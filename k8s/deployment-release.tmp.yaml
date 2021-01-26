@@ -1,3 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-key-reviews-deepai-release
+  namespace: app
+type: Opaque
+data:
+  API_KEY_DEEPAI: $API_KEY_DEEPAI_B64
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,7 +39,12 @@ spec:
           - name: PORT
             value: "80"
           - name: AUTH_URL
-            value: http://10.0.6.54:80
+            value: http://10.0.6.54:80/api/v1
+          - name: API_KEY_DEEPAI
+            valueFrom:
+              secretKeyRef:
+                name: api-key-reviews-deepai-release
+                key: API_KEY_DEEPAI
       - name: mongo
         image: mongo:4.4.3-bionic
         ports:
