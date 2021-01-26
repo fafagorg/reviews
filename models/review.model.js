@@ -28,6 +28,10 @@ var ReviewSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    externalScore: {
+        type: String,
+        maxlength: 50
+    },
     reviewedProductId: String,
     reviewedClientId: String,
     comments: [
@@ -38,6 +42,6 @@ var ReviewSchema = new mongoose.Schema({
             date: String
         }
     ],
-})
+});
 
 module.exports = mongoose.model('Review', ReviewSchema);

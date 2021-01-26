@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews-$BRANCH_NAME
+  namespace: app
+spec:
+  type: NodePort
+  selector:
+    app: reviews-$BRANCH_NAME
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+      name: reviews
