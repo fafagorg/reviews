@@ -50,12 +50,12 @@ module.exports.addReview = async function addReview(req, res, headers, next) {
 
     let decoded = jwtDecode(headers.authorization);
 
-    let loggedUserId = decoded.user._id;
+    let loggerUsername = decoded.user.username;
 
     review.id = uuidv4();
     review.dateCreated = new Date().toISOString();
     review.externalScore = resp.data.output[0];
-    review.reviewerClientId = loggedUserId;
+    review.reviewerClientId = loggerUsername;
 
 
     ReviewModel.create(review)
@@ -105,7 +105,7 @@ module.exports.deleteReview = async function deleteReview(req, res, headers, nex
 
     let decoded = jwtDecode(headers.authorization);
 
-    let loggedUserId = decoded.user._id;
+    let loggerUsername = decoded.user.username;
 
     let rev = await ReviewModel.findOne({ id: req.id.value }).lean();
 
@@ -113,7 +113,7 @@ module.exports.deleteReview = async function deleteReview(req, res, headers, nex
       return res.status(404).send(getResponse(404, "Review not found."));
     }
 
-    if (rev.reviewerClientId != loggedUserId) {
+    if (rev.reviewerClientId != loggerUsername) {
       return res.status(403).send(getResponse(403, "Cannot delete a review created by another person"));
     }
 
@@ -146,7 +146,7 @@ module.exports.updateReview = async function updateReview(req, res, headers, nex
 
     let decoded = jwtDecode(headers.authorization);
 
-    let loggedUserId = decoded.user._id;
+    let loggerUsername = decoded.user.username;
 
     let rev = await ReviewModel.findOne({ id: req.id.value }).lean();
 
@@ -154,7 +154,7 @@ module.exports.updateReview = async function updateReview(req, res, headers, nex
       return res.status(404).send(getResponse(404, "Review not found."));
     }
 
-    if (rev.reviewerClientId != loggedUserId) {
+    if (rev.reviewerClientId != loggerUsername) {
       return res.status(403).send(getResponse(403, "Cannot delete a review created by another person"));
     }
 
@@ -329,11 +329,11 @@ module.exports.addCommentToReview = function addCommentToReview(req, res, header
 
     let decoded = jwtDecode(headers.authorization);
 
-    let loggedUserId = decoded.user._id;
+    let loggerUsername = decoded.user.username;
 
     var comment = {
       id: uuidv4(),
-      clientId: loggedUserId,
+      clientId: loggerUsername,
       body: req.comment.value.body,
       date: new Date().toISOString()
     }
@@ -395,7 +395,7 @@ module.exports.deleteCommentFromReview = async function deleteCommentFromReview(
 
     let decoded = jwtDecode(headers.authorization);
 
-    let loggedUserId = decoded.user._id;
+    let loggerUsername = decoded.user.username;
 
     let rev = await ReviewModel.findOne({ id: req.reviewId.value }).lean();
 
@@ -411,7 +411,7 @@ module.exports.deleteCommentFromReview = async function deleteCommentFromReview(
       return res.status(404).send(getResponse(404, "Comment not found."));
     }
 
-    if (comm.clientId != loggedUserId) {
+    if (comm.clientId != loggerUsername) {
       return res.status(403).send(getResponse(403, "Cannot delete a comment created by another person"));
     }
 
@@ -448,7 +448,7 @@ module.exports.updateCommentFromReview = async function updateCommentFromReview(
 
     let decoded = jwtDecode(headers.authorization);
 
-    let loggedUserId = decoded.user._id;
+    let loggerUsername = decoded.user.username;
 
     let rev = await ReviewModel.findOne({ id: req.reviewId.value }).lean();
 
@@ -464,7 +464,7 @@ module.exports.updateCommentFromReview = async function updateCommentFromReview(
       return res.status(404).send(getResponse(404, "Comment not found."));
     }
 
-    if (comm.clientId != loggedUserId) {
+    if (comm.clientId != loggerUsername) {
       return res.status(403).send(getResponse(403, "Cannot delete a comment created by another person"));
     }
 
