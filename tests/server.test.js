@@ -2,7 +2,6 @@ const app = require('../index.js');
 const mongoose = require('mongoose');
 const request = require('supertest');
 const Review = require('../models/review.model');
-const Question = require('../models/question.model');
 const AuthResource = require('../resources/authResource');
 const nock = require('nock');
 
