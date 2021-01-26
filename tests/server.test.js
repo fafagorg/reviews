@@ -218,7 +218,7 @@ describe("Reviews API", async () => {
                     "title": "Test 2",
                     "score": 3,
                     "description": "Good thing",
-                    "reviewerClientId": "600437d985639e47dad82d87",
+                    "reviewerClientId": "TestJuanmi",
                     "reviewedProductId": "2",
                     "reviewedClientId": "2",
                     "comments": [
@@ -947,7 +947,7 @@ describe("Reviews API", async () => {
                 "comments": [
                     {
                         "id": "ead85c21-83c3-4c01-a723-331949ab822b",
-                        "clientId": "600437d985639e47dad82d87",
+                        "clientId": "TestJuanmi",
                         "body": "Comment 2",
                         "date": "2021-01-08T14:51:58.373Z"
                     }
