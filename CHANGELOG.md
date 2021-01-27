@@ -1,3 +1,12 @@
+# [1.5.0](https://github.com/fafagorg/reviews/compare/v1.4.0...v1.5.0) (2021-01-27)
+
+
+### Features
+
+* Updating readme with badges ([9ad6197](https://github.com/fafagorg/reviews/commit/9ad61974b6a34c4c8073d085e5cee36853d6696d))
+
+
+
 # [1.4.0](https://github.com/fafagorg/reviews/compare/v1.3.0...v1.4.0) (2021-01-27)
 
 
