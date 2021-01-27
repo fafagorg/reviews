@@ -1,0 +1,233 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI Test, coverage and linting and CD build and push to Docker Hub
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+        mongodb-version: [4.4]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+    - name: Install dependencies 
+      run: npm ci
+    - name: Run tests
+      run: npm run test
+      env:
+        CI: true
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.0.14
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+      env:
+        CI: true
+  integrationTestDev:
+    name: (dev) Integration tests - Checkout infrastructure, install mocha and run tests (docker-compose up, mocha tests and docker-compose down)
+    needs: buildTest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: fafagorg/infrastructure
+        ref: refs/heads/main
+    - name: Secret to env
+      run: echo API_KEY_DEEPAI=${{secrets.API_KEY_DEEPAI}} >> tests/.env
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies 
+      run: npm ci
+    - name: Run tests
+      run: npm run test
+      env:
+        CI: true
+  integrationTestMain:
+    name: (main) Integration tests - Checkout infrastructure, install mocha and run tests (docker-compose up, mocha tests and docker-compose down)
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: fafagorg/infrastructure
+        ref: refs/heads/main
+    - name: Secret to env
+      run: echo API_KEY_DEEPAI=${{secrets.API_KEY_DEEPAI}} >> tests/.env
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies 
+      run: npm ci
+    - name: Run tests
+      run: npm run test
+      env:
+        CI: true
+  buildProd:
+    name: Release, build and push to dockerhub using tag version
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push'}}
+    needs: integrationTestMain
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2    
+    - name: Conventional Changelog
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        output-file: 'CHANGELOG.md'
+        tag-prefix: 'v'
+        release-count: 0
+        package-json: './package.json'
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+      with:
+        tag_name: ${{ steps.changelog.outputs.tag }}
+        release_name: ${{ steps.changelog.outputs.tag }}
+        body: ${{ steps.changelog.outputs.clean_changelog }}
+    - name: Sync dev with main
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: "main"
+        destination_branch: "dev"
+        pr_title: "Synchronize dev with main after release ${{ steps.changelog.outputs.tag }}"
+        pr_body: ":crown:"
+        pr_reviewer: "cesgarpas"
+        pr_assignee: "cesgarpas"
+        pr_label: "auto-pr"                              
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: AutoModality/action-clean@v1
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and push
+      id: docker_build_tag
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: fafagoreviews/reviews:${{ steps.changelog.outputs.tag }}
+    - name: Build and push
+      id: docker_build_latest
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: fafagoreviews/reviews:latest
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}  
+  buildTest:
+    if: ${{ github.ref == 'refs/heads/dev' && github.event_name == 'push' }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and push
+      id: docker_build_test_sha
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: fafagoreviews/reviews:test-${{ github.sha }}
+    - name: Build and push
+      id: docker_build_test
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: fafagoreviews/reviews:dev
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
+  gCloudDeployment-Prod:
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push'}}
+    needs: buildProd
+    name: Deploy PRODUCTION code automatically to google cloud
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.2
+    - name: Deploy in Kubernetes
+      env:
+        GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
+        CLOUDINARY_API_SECRET_B64: "${{ secrets.CLOUDINARY_API_SECRET_B64 }}"
+        CLOUDINARY_API_KEY_B64: "${{ secrets.CLOUDINARY_API_KEY_B64 }}"
+      run: |
+        export DOCKER_IMAGES=fafagoreviews/reviews:latest
+        export BRANCH_NAME=main
+        echo $(ls)
+        /usr/bin/envsubst < ./k8s/deployment-$BRANCH_NAME.tmp.yaml > ./k8s/deployment.yaml
+        /usr/bin/envsubst < ./k8s/service.tmp.yaml > ./k8s/service.yaml
+        echo "$GCLOUD_API_KEY" > account.json
+        gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json
+        gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us
+        kubectl apply -f ./k8s/deployment.yaml
+        kubectl apply -f ./k8s/service.yaml
+        kubectl rollout status deployment.apps/reviews-$BRANCH_NAME -n app
+  gCloudDeployment-Dev:
+    if: ${{ github.ref == 'refs/heads/dev' && github.event_name == 'push'}}
+    needs: integrationTestDev
+    name: Deploy DEVELOPMENT code automatically to google cloud
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.1.2
+    - name: Deploy in Kubernetes
+      env:
+        GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
+        CLOUDINARY_API_SECRET_B64: "${{ secrets.CLOUDINARY_API_SECRET_B64 }}"
+        CLOUDINARY_API_KEY_B64: "${{ secrets.CLOUDINARY_API_KEY_B64 }}"
+      run: |
+        export DOCKER_IMAGES=fafagoreviews/reviews:test-${{ github.sha }}
+        export BRANCH_NAME=develop
+        echo $(ls)
+        /usr/bin/envsubst < ./k8s/deployment-$BRANCH_NAME.tmp.yaml > ./k8s/deployment.yaml
+        /usr/bin/envsubst < ./k8s/service.tmp.yaml > ./k8s/service.yaml
+        echo "$GCLOUD_API_KEY" > account.json
+        gcloud auth activate-service-account fis-deploy@fis-us.iam.gserviceaccount.com --key-file=account.json
+        gcloud container clusters get-credentials cluster-1 --zone europe-west1-b --project fis-us
+        kubectl apply -f ./k8s/deployment.yaml
+        kubectl apply -f ./k8s/service.yaml
+        kubectl rollout status deployment.apps/reviews-$BRANCH_NAME -n app
+
