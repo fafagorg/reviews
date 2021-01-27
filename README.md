@@ -1,6 +1,6 @@
 # Reviews API for Fafago APP
 
-[![Node.js CI](https://github.com/fafagorg/reviews/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/fafagorg/reviews/actions)
+[![Node.js CI](https://github.com/fafagorg/reviews/workflows/Node.js%20CI%20Test%2C%20coverage%20and%20linting%20and%20CD%20build%20and%20push%20to%20Docker%20Hub/badge.svg?branch=main)](https://github.com/fafagorg/reviews/actions)
 [![codecov](https://codecov.io/gh/fafagorg/reviews/branch/main/graph/badge.svg?token=P0V93GNQJI)](https://codecov.io/gh/fafagorg/reviews)
 <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-semistandard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
