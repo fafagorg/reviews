@@ -188,8 +188,7 @@ jobs:
     - name: Deploy in Kubernetes
       env:
         GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
-        CLOUDINARY_API_SECRET_B64: "${{ secrets.CLOUDINARY_API_SECRET_B64 }}"
-        CLOUDINARY_API_KEY_B64: "${{ secrets.CLOUDINARY_API_KEY_B64 }}"
+        API_KEY_DEEPAI_B64: "${{ secrets.API_KEY_DEEPAI_B64 }}"
       run: |
         export DOCKER_IMAGES=fafagoreviews/reviews:latest
         export BRANCH_NAME=main
@@ -216,8 +215,7 @@ jobs:
     - name: Deploy in Kubernetes
       env:
         GCLOUD_API_KEY: "${{ secrets.GCLOUD_API_KEY }}"
-        CLOUDINARY_API_SECRET_B64: "${{ secrets.CLOUDINARY_API_SECRET_B64 }}"
-        CLOUDINARY_API_KEY_B64: "${{ secrets.CLOUDINARY_API_KEY_B64 }}"
+        API_KEY_DEEPAI_B64: "${{ secrets.API_KEY_DEEPAI_B64 }}"
       run: |
         export DOCKER_IMAGES=fafagoreviews/reviews:test-${{ github.sha }}
         export BRANCH_NAME=develop
