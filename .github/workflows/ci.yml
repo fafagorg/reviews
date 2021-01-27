@@ -32,6 +32,13 @@ jobs:
       - name: Tests 🚨
         if: ${{ failure() }}
         run: echo Tests execution failed!
+        - name: Upload coverage to Codecov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1.0.14
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+        env:
+          CI: true
 
   cleanup-runs:
     runs-on: ubuntu-latest
