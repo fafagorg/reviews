@@ -1,3 +1,19 @@
+# [1.4.0](https://github.com/fafagorg/reviews/compare/v1.3.0...v1.4.0) (2021-01-27)
+
+
+### Bug Fixes
+
+* CI/CD ([d3f946e](https://github.com/fafagorg/reviews/commit/d3f946e13d4a12e446d78eb144f1f0a2c898c9fe))
+* secrets ([d77fccd](https://github.com/fafagorg/reviews/commit/d77fccd703547d4a23d2cca93d9c7bf4b87ce7c8))
+
+
+### Features
+
+* Added coverage automatization ([1a577ff](https://github.com/fafagorg/reviews/commit/1a577ff6fe1d75bd988736af74055986b8bb479c))
+* CI/CD workflow ([8ee6836](https://github.com/fafagorg/reviews/commit/8ee683673af2eed6119b8876535eaa9fa788dbdc))
+
+
+
 # [1.3.0](https://github.com/fafagorg/reviews/compare/v1.2.3...v1.3.0) (2021-01-26)
 
 
