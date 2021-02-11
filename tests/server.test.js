@@ -35,7 +35,7 @@ beforeEach(async () => {
         });
 });
 
-describe("Reviews API", async () => {
+describe("Reviews API", () => {
     describe("GET /reviews", () => {
 
         beforeAll(() => {

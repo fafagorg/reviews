@@ -5,11 +5,9 @@ if (process.env.ENVIRONMENT !== 'production') {
     require('dotenv').config();
   }
 
-describe("Review DB connection", async () => {
+describe("Review DB connection", () => {
     beforeAll(() => {
         return db.connect(true);
-        // db.connect();
-        // return Promise.resolve();
     });
 
     beforeEach((done) => {
