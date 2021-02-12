@@ -1,3 +1,12 @@
+# [1.6.0](https://github.com/fafagorg/reviews/compare/v1.5.1...v1.6.0) (2021-02-12)
+
+
+### Features
+
+* Mocking integration environment ([392c4a7](https://github.com/fafagorg/reviews/commit/392c4a78a57318e9473f2891953990f33f343b88))
+
+
+
 ## [1.5.1](https://github.com/fafagorg/reviews/compare/v1.5.0...v1.5.1) (2021-01-27)
 
 
