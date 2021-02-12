@@ -1,3 +1,12 @@
+## [1.5.1](https://github.com/fafagorg/reviews/compare/v1.5.0...v1.5.1) (2021-01-27)
+
+
+### Bug Fixes
+
+* Badge ([caf787f](https://github.com/fafagorg/reviews/commit/caf787ff465933445886916fc3ac9f88b3d9ee6f))
+
+
+
 # [1.5.0](https://github.com/fafagorg/reviews/compare/v1.4.0...v1.5.0) (2021-01-27)
 
 
