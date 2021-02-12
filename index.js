@@ -5,14 +5,28 @@ if (process.env.ENVIRONMENT !== 'production') {
 }
 
 var fs = require('fs'),
-    http = require('http'),
-    path = require('path');
+  http = require('http'),
+  path = require('path');
 
 var express = require("express");
 var app = express();
 var bodyParser = require('body-parser');
 var database = require('./db');
 var cors = require('cors')
+
+//Nock mocking for testing
+const nock = require('nock');
+if (process.env.ENVIRONMENT === 'integration') {
+  nock("https://api.deepai.org/api", { allowUnmocked: true })
+  .post('/sentiment-analysis').times(100)
+  .reply(200, {
+      "id": "c7659eb6-4f04-4135-81a7-6debaccb3517",
+      "output": [
+          "Neutral"
+      ]
+  });
+}
+
 
 database.connect(false);
 
@@ -39,8 +53,10 @@ oasTools.configure(options_object);
 app.use(cors())
 
 
-oasTools.initialize(oasDoc, app, function() {
-  app.server = http.createServer(app).listen(serverPort, function() {
+
+
+oasTools.initialize(oasDoc, app, function () {
+  app.server = http.createServer(app).listen(serverPort, function () {
     console.log("App running at http://localhost:" + serverPort);
     console.log("________________________________________________________________");
     if (options_object.docs !== false) {
@@ -50,7 +66,7 @@ oasTools.initialize(oasDoc, app, function() {
   });
 });
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.send({
     info: "This API was generated using oas-generator!",
     name: oasDoc.info.title
@@ -59,3 +75,4 @@ app.get('/', function(req, res) {
 
 
 module.exports = app;
+
